@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nexus fără frontiere — hub de agenți AI</title>
+<meta name="description" content="Hub personal de chat AI într-un singur fișier HTML: te conectezi direct, din browser, la API-urile Anthropic, OpenAI, Google sau la un endpoint compatibil OpenAI. Fără server propriu, fără telemetrie; cheile rămân în browserul tău.">
+<meta name="color-scheme" content="dark">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0E1017">
+<meta property="og:title" content="Nexus fără frontiere — hub de agenți AI">
+<meta property="og:description" content="Chat cu Anthropic, OpenAI, Google sau un endpoint personalizat, direct din browser, într-un singur fișier HTML.">
+<meta property="og:type" content="website">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-BysA4GpYTrSDXBS+gle3we1eL93tDaASVwUXRc1QUAA='; style-src 'unsafe-inline'; img-src data:; connect-src https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*; base-uri 'none'; form-action 'none'; frame-src 'none'; object-src 'none'; worker-src 'none'; manifest-src 'none'">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E1017'/%3E%3Cpath d='M16 6l8 10-8 10-8-10z' fill='%23E8A33D'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   NEXUS FĂRĂ FRONTIERE — design system
+   Concept: panou de comutare (switchboard) — fiecare furnizor AI
+   e o "linie" cu propria culoare de semnal, ca niște cabluri
+   de patch-panel. Bază întunecată, tehnic, fără dependențe externe.
+   ============================================================ */
+
+:root{
+  --bg:#0E1017;
+  --bg-elev:#151822;
+  --panel:#191C27;
+  --panel-hi:#222634;
+  --panel-hover:#262B3B;
+  --border:#2A2E3F;
+  --border-soft:#20232F;
+  --text:#EBEDF3;
+  --text-dim:#9198AE;
+  --text-mute:#8C93AD;
+  --brand:#E8A33D;
+  --brand-soft:#4A3A22;
+  --line-anthropic:#D98E5C;
+  --line-openai:#5EC9B8;
+  --line-google:#7B9EF0;
+  --line-custom:#B98CE8;
+  --ok:#5FD68A;
+  --err:#E8637A;
+  --warn:#E8C05C;
+  --radius-sm:6px;
+  --radius:10px;
+  --radius-lg:14px;
+  --mono:ui-monospace,"SF Mono","Cascadia Code","JetBrains Mono",Consolas,"Liberation Mono",monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,Helvetica,Arial,sans-serif;
+  --shadow-modal:0 20px 60px -12px rgba(0,0,0,.6);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+button,input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--line-google)}
+::selection{background:var(--brand-soft);color:var(--text)}
+
+/* scrollbars */
+*{scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;border:2px solid var(--bg)}
+*::-webkit-scrollbar-track{background:transparent}
+
+/* focus visibility */
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+}
+
+/* ---------- layout ---------- */
+#app{display:grid;grid-template-columns:280px 1fr;height:100dvh;height:100vh}
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  background:var(--bg-elev);
+  border-right:1px solid var(--border-soft);
+  display:flex;flex-direction:column;
+  min-height:0;
+}
+.sidebar-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 16px 14px;
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{
+  width:30px;height:30px;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--brand);font-size:16px;
+  border:1px solid var(--brand-soft);border-radius:8px;
+  background:radial-gradient(circle at 30% 20%, rgba(232,163,61,.18), transparent 70%);
+}
+.brand-text h1{
+  margin:0;font-size:14.5px;font-weight:600;letter-spacing:.2px;color:var(--text);
+  font-family:var(--mono);
+}
+.brand-text h1 span{color:var(--text-mute);font-weight:500}
+.brand-text .tagline{margin:1px 0 0;font-size:11px;color:var(--text-mute)}
+
+.btn-new-conv{
+  margin:2px 16px 14px;
+  padding:10px 12px;
+  background:var(--panel-hi);
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:var(--radius);
+  font-weight:600;font-size:13.5px;
+  text-align:left;
+  transition:background .12s,border-color .12s;
+}
+.btn-new-conv:hover{background:var(--panel-hover);border-color:var(--brand-soft)}
+
+.conv-list{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:0 10px;display:flex;flex-direction:column;gap:2px;
+}
+.conv-item{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 8px;border-radius:var(--radius-sm);
+  cursor:pointer;position:relative;
+  color:var(--text-dim);
+}
+.conv-item:hover{background:var(--panel)}
+.conv-item.active{background:var(--panel-hi);color:var(--text)}
+.conv-item .dot{width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+.conv-item .meta{min-width:0;flex:1}
+.conv-item .title{
+  font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.conv-item .sub{display:block;font-size:11px;color:var(--text-mute);margin-top:1px}
+.conv-item .conv-main{
+  flex:1;min-width:0;display:flex;align-items:center;gap:8px;
+  background:transparent;border:0;padding:0;margin:0;color:inherit;text-align:left;font:inherit;
+}
+.conv-item .conv-main .title{display:block}
+.conv-item .btn-del{
+  opacity:0;flex:0 0 auto;background:transparent;border:0;color:var(--text-mute);
+  width:24px;height:24px;border-radius:5px;font-size:13px;line-height:1;
+}
+.conv-item:hover .btn-del,.conv-item:focus-within .btn-del{opacity:1}
+@media (hover:none){.conv-item .btn-del{opacity:1;width:32px;height:32px}}
+.conv-item .btn-del:hover{background:var(--err);color:#1a0a0d}
+.conv-empty-hint{padding:14px 8px;font-size:12px;color:var(--text-mute)}
+
+.patch-panel{
+  margin:10px 12px 4px;
+  padding:10px 10px;
+  border:1px solid var(--border-soft);
+  border-radius:var(--radius);
+  background:var(--panel);
+}
+.patch-panel-title{
+  font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--text-mute);
+  text-transform:uppercase;margin:0 0 8px 2px;
+}
+.patch-row{
+  display:flex;align-items:center;gap:8px;
+  padding:4px 2px;font-size:12px;color:var(--text-dim);
+}
+.patch-row .jack{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.patch-row .name{flex:1;font-family:var(--mono)}
+.patch-row .led{width:6px;height:6px;border-radius:50%;background:var(--text-mute);flex:0 0 auto}
+.patch-row .led.ok{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+.patch-row .led.err{background:var(--err);box-shadow:0 0 6px var(--err)}
+
+.sidebar-footer{
+  display:flex;gap:6px;padding:12px 12px 14px;border-top:1px solid var(--border-soft);
+  margin-top:6px;flex-wrap:wrap;
+}
+.btn-ghost{
+  flex:1;min-width:0;
+  background:transparent;border:1px solid var(--border);color:var(--text-dim);
+  padding:8px 6px;border-radius:var(--radius-sm);font-size:11.5px;
+  display:flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;
+}
+.btn-ghost:hover{background:var(--panel);color:var(--text);border-color:var(--text-mute)}
+
+/* ---------- main ---------- */
+.main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.topbar{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;border-bottom:1px solid var(--border-soft);
+  background:var(--bg-elev);
+}
+.conv-title-input{
+  flex:1;min-width:0;background:transparent;border:0;color:var(--text);
+  font-size:15px;font-weight:600;padding:6px 4px;border-radius:6px;
+}
+.conv-title-input:hover{background:var(--panel)}
+.conv-title-input:focus{background:var(--panel);outline:none;box-shadow:0 0 0 2px var(--brand-soft)}
+.topbar-controls{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.select-control,.model-input{
+  background:var(--panel);border:1px solid var(--border);color:var(--text-dim);
+  padding:7px 9px;border-radius:var(--radius-sm);font-size:12.5px;
+  max-width:132px;
+}
+.model-input{width:150px;font-family:var(--mono);font-size:11.5px}
+.select-control:hover,.model-input:hover{border-color:var(--text-mute)}
+
+.icon-btn{
+  background:transparent;border:0;color:var(--text-dim);
+  width:32px;height:32px;border-radius:var(--radius-sm);
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.icon-btn:hover{background:var(--panel);color:var(--text)}
+.mobile-only{display:none}
+
+.messages{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:22px 0 10px;
+}
+.messages-inner{max-width:760px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:18px}
+
+.msg{display:flex;gap:12px;max-width:100%}
+.msg .avatar{
+  flex:0 0 auto;width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;font-weight:700;margin-top:2px;
+  border:1px solid var(--border);
+}
+.msg.user{flex-direction:row-reverse}
+.msg.user .avatar{background:var(--panel-hi);color:var(--text-dim)}
+.msg.assistant .avatar{background:var(--panel);color:var(--brand);border-color:var(--brand-soft)}
+.msg .bubble-wrap{min-width:0;flex:0 1 auto;display:flex;flex-direction:column;gap:4px}
+.msg.user .bubble-wrap{align-items:flex-end}
+.msg .bubble{
+  padding:10px 14px;border-radius:var(--radius-lg);
+  font-size:14.5px;line-height:1.55;
+  overflow-wrap:break-word;
+}
+.msg.user .bubble{background:var(--panel-hi);border:1px solid var(--border);border-top-right-radius:4px}
+.msg.assistant .bubble{background:var(--panel);border:1px solid var(--border-soft);border-top-left-radius:4px}
+.msg.assistant.streaming .bubble::after{
+  content:'▍';color:var(--brand);animation:blink 1s steps(2) infinite;margin-left:2px;
+}
+.msg.error .bubble{border-color:var(--err);color:#f3b8c2}
+@keyframes blink{50%{opacity:0}}
+.msg .msg-meta{font-size:11px;color:var(--text-mute);padding:0 4px;font-family:var(--mono)}
+
+.bubble p{margin:0 0 10px}
+.bubble p:last-child{margin-bottom:0}
+.bubble h1,.bubble h2,.bubble h3{margin:14px 0 8px;font-size:1.05em;color:var(--text)}
+.bubble ul,.bubble ol{margin:0 0 10px;padding-left:22px}
+.bubble li{margin:3px 0}
+.bubble code{
+  background:var(--bg-elev);border:1px solid var(--border-soft);
+  padding:1px 5px;border-radius:4px;font-family:var(--mono);font-size:.88em;
+}
+.bubble a{text-decoration:underline;text-underline-offset:2px}
+.code-block{
+  margin:10px 0;border:1px solid var(--border);border-radius:var(--radius-sm);
+  overflow:hidden;background:var(--bg-elev);
+}
+.code-block-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 10px;background:var(--panel-hi);border-bottom:1px solid var(--border-soft);
+}
+.code-lang{font-family:var(--mono);font-size:11px;color:var(--text-mute);text-transform:uppercase;letter-spacing:.5px}
+.btn-copy-code{
+  background:transparent;border:1px solid var(--border);color:var(--text-dim);
+  font-size:11px;padding:4px 9px;border-radius:5px;margin-left:auto;
+}
+.btn-copy-code:hover{color:var(--text);border-color:var(--text-mute)}
+.code-block pre{margin:0;padding:12px 14px;overflow-x:auto}
+.code-block code{background:none;border:0;padding:0;font-size:12.5px;line-height:1.55}
+
+.empty-state{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:20px;color:var(--text-mute);gap:6px;
+}
+.empty-state h2{margin:0;color:var(--text-dim);font-size:16px;font-weight:600}
+.empty-state p{margin:0;font-size:13px;max-width:360px}
+.empty-state .btn-primary{margin-top:10px}
+
+.btn-primary{
+  background:var(--brand);color:#241705;border:0;font-weight:700;
+  padding:9px 16px;border-radius:var(--radius-sm);font-size:13px;
+}
+.btn-primary:hover{filter:brightness(1.08)}
+
+.composer{
+  display:flex;align-items:flex-end;gap:8px;
+  padding:12px 20px 6px;max-width:760px;width:100%;margin:0 auto;
+}
+.input-text{
+  flex:1;resize:none;background:var(--panel);border:1px solid var(--border);
+  color:var(--text);border-radius:var(--radius);padding:11px 13px;
+  max-height:200px;line-height:1.45;
+}
+.input-text:focus{outline:none;border-color:var(--brand-soft);box-shadow:0 0 0 2px var(--brand-soft)}
+.btn-send,.btn-stop{
+  flex:0 0 auto;height:42px;padding:0 16px;border-radius:var(--radius);
+  font-weight:700;font-size:13px;border:0;
+}
+.btn-send{background:var(--brand);color:#241705}
+.btn-send:disabled{opacity:.4;cursor:default}
+.btn-send:not(:disabled):hover{filter:brightness(1.08)}
+.btn-stop{background:var(--err);color:#2a0d12}
+.hidden{display:none !important}
+.privacy-note{
+  max-width:760px;margin:0 auto;padding:4px 20px 14px;
+  font-size:11px;color:var(--text-mute);text-align:center;
+}
+
+/* ---------- overlay + modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(6,7,11,.6);backdrop-filter:blur(2px);z-index:40}
+.modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal-panel{
+  width:100%;max-width:560px;max-height:85vh;display:flex;flex-direction:column;
+  background:var(--bg-elev);border:1px solid var(--border);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-modal);
+}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px;border-bottom:1px solid var(--border-soft);
+}
+.modal-header h2{margin:0;font-size:15px;font-family:var(--mono)}
+.modal-body{padding:6px 18px 18px;overflow-y:auto}
+
+.settings-section{padding:16px 0;border-bottom:1px solid var(--border-soft)}
+.settings-section:last-child{border-bottom:0}
+.settings-section-title{
+  display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:13px;font-weight:700;
+}
+.settings-section-title .dot{width:9px;height:9px;border-radius:50%}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:5px}
+.field input,.field textarea{
+  width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);
+  padding:9px 11px;border-radius:var(--radius-sm);font-size:13px;
+}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--brand-soft);box-shadow:0 0 0 2px var(--brand-soft)}
+.field-row{display:flex;gap:8px;align-items:center}
+.field-row .field{flex:1;margin-bottom:0}
+.key-input-wrap{position:relative}
+.key-input-wrap input{padding-right:56px;font-family:var(--mono)}
+.btn-toggle-key{
+  position:absolute;right:6px;bottom:5px;
+  background:transparent;border:0;color:var(--text-dim);font-size:12px;padding:6px 8px;
+}
+.btn-test{
+  background:var(--panel-hi);border:1px solid var(--border);color:var(--text);
+  padding:7px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;white-space:nowrap;
+}
+.btn-test:hover{border-color:var(--text-mute)}
+.test-result{font-size:11.5px;margin-left:2px}
+.test-result.ok{color:var(--ok)}
+.test-result.err{color:var(--err)}
+.hint{font-size:11px;color:var(--text-mute);margin-top:6px;line-height:1.5}
+.warn-box{border:1px solid var(--warn);border-radius:var(--radius);background:rgba(232,192,92,.07);padding:11px 13px;margin:14px 0 4px;font-size:12px;line-height:1.55;color:var(--text)}
+.warn-box strong{color:var(--warn)}
+.warn-box ul{margin:6px 0 0;padding-left:18px}
+.warn-box li{margin:3px 0}
+.btn-danger{background:transparent;border:1px solid var(--err);color:var(--err);padding:7px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600}
+.btn-danger:hover{background:var(--err);color:#1a0a0d}
+.field select{width:100%;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:9px 11px;border-radius:var(--radius-sm);font-size:13px}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.noscript-msg{position:fixed;inset:0;z-index:100;background:var(--bg);color:var(--text);padding:40px 24px;font-size:15px}
+
+.persona-card{
+  border:1px solid var(--border-soft);border-radius:var(--radius);padding:12px;margin-bottom:8px;background:var(--panel);
+}
+.persona-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.persona-card-head strong{font-size:13px}
+.persona-card .badge{font-size:11px;font-family:var(--mono);color:var(--text-mute);border:1px solid var(--border);border-radius:4px;padding:1px 6px}
+.persona-card p{margin:0;font-size:11.5px;color:var(--text-dim);line-height:1.5}
+.btn-small-del{background:transparent;border:0;color:var(--text-mute);font-size:12px}
+.btn-small-del:hover{color:var(--err)}
+
+.toast-container{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{
+  background:var(--panel-hi);border:1px solid var(--border);color:var(--text);
+  padding:10px 16px;border-radius:var(--radius);font-size:12.5px;
+  box-shadow:0 8px 24px -8px rgba(0,0,0,.5);
+  animation:toast-in .18s ease-out;
+}
+.toast.error{border-color:var(--err);color:#f7c3cc}
+.toast.success{border-color:var(--ok);color:#c7f0d6}
+@keyframes toast-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ---------- responsive ---------- */
+@media (max-width:820px){
+  #app{grid-template-columns:1fr}
+  .sidebar{
+    position:fixed;inset:0 25% 0 0;z-index:45;
+    transform:translateX(-100%);transition:transform .18s ease;
+    box-shadow:20px 0 40px rgba(0,0,0,.4);
+  }
+  .sidebar.open{transform:translateX(0)}
+  .sidebar:not(.open){visibility:hidden}
+  .mobile-only{display:flex}
+  .topbar{flex-wrap:wrap}
+  .conv-title-input{flex:1 1 120px}
+  .topbar-controls{flex:1 1 100%;min-width:0;flex-wrap:wrap;justify-content:flex-start}
+  .select-control,.model-input{flex:1 1 100px;min-width:0;max-width:none;width:auto}
+}
+</style>
+</head>
+<body>
+<noscript><div class="noscript-msg"><h1>Nexus fără frontiere</h1><p>Aplicația are nevoie de JavaScript activat în browser. Nu trimite nimic nicăieri fără el, dar nici nu poate funcționa.</p></div></noscript>
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <span class="brand-mark">◆</span>
+        <div class="brand-text">
+          <h1>Nexus <span>fără frontiere</span></h1>
+          <p class="tagline">Hub personal de agenți AI</p>
+        </div>
+      </div>
+      <button class="icon-btn mobile-only" id="btn-close-sidebar" aria-label="Închide meniul">✕</button>
+    </div>
+
+    <button class="btn-new-conv" id="btn-new-conv">+ Conversație nouă</button>
+
+    <nav class="conv-list" id="conv-list" aria-label="Conversații"></nav>
+
+    <div class="patch-panel" id="patch-panel">
+      <p class="patch-panel-title">Panou linii</p>
+      <div id="patch-rows"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="btn-ghost" id="btn-settings">⚙ Setări</button>
+      <button class="btn-ghost" id="btn-export">⇩ Export</button>
+      <button class="btn-ghost" id="btn-import">⇧ Import</button>
+      <input type="file" id="import-file" accept="application/json" hidden>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn mobile-only" id="btn-open-sidebar" aria-label="Deschide meniul">☰</button>
+      <input class="conv-title-input" id="conv-title" placeholder="Conversație nouă" maxlength="80" aria-label="Titlul conversației">
+      <div class="topbar-controls">
+        <select class="select-control" id="persona-select" aria-label="Agent"></select>
+        <select class="select-control" id="provider-select" aria-label="Furnizor"></select>
+        <input class="model-input" id="model-input" list="model-suggestions" placeholder="model" aria-label="Model">
+        <datalist id="model-suggestions"></datalist>
+      </div>
+    </header>
+
+    <div class="messages" id="messages" role="log" aria-label="Mesaje" aria-live="off">
+      <div class="messages-inner" id="messages-inner"></div>
+    </div>
+
+    <div class="empty-state hidden" id="empty-state">
+      <h2>Nicio linie deschisă</h2>
+      <p>Pornește o conversație nouă și alege un agent — Cod, Cowork sau General — apoi conectează-l la furnizorul tău preferat.</p>
+      <button class="btn-primary" id="btn-empty-new">+ Conversație nouă</button>
+    </div>
+
+    <form class="composer" id="composer">
+      <textarea class="input-text" id="input-text" placeholder="Scrie un mesaj…" rows="1" aria-label="Mesaj"></textarea>
+      <button type="submit" class="btn-send" id="btn-send">Trimite</button>
+      <button type="button" class="btn-stop hidden" id="btn-stop">Oprește</button>
+    </form>
+    <p class="privacy-note">Fără server propriu și fără telemetrie, dar nu e „offline”: mesajele și istoricul conversației pleacă direct către furnizorul ales. Cheile API stau necriptat în acest browser (<a href="#" id="link-privacy">detalii</a>).</p>
+  </main>
+</div>
+
+<div class="overlay hidden" id="overlay"></div>
+
+<div class="modal hidden" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" tabindex="-1">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h2 id="settings-title">Setări</h2>
+      <button class="icon-btn" id="btn-close-settings" aria-label="Închide">✕</button>
+    </div>
+    <div class="modal-body" id="settings-body"></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container" role="status" aria-live="polite"></div>
+<div class="sr-only" id="sr-status" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   NEXUS FĂRĂ FRONTIERE — logică aplicație
+   Vanilla JS, fără dependențe externe, fără server.
+   Cheile API și conversațiile sunt stocate local (localStorage), NECRIPTAT;
+   fiecare cerere merge direct din acest browser către endpoint-ul
+   oficial al furnizorului ales — Anthropic, OpenAI, Google sau
+   un endpoint compatibil OpenAI la alegere (Ollama, OpenRouter,
+   DeepSeek, Mistral, etc.). Aplicația NU este „offline": fără
+   rețea nu poate vorbi cu niciun model.
+   Pagina are Content-Security-Policy (meta) cu connect-src limitat
+   la cele trei API-uri + localhost; vezi README pentru endpoint-uri
+   personalizate externe.
+   ============================================================ */
+(function(){
+"use strict";
+
+/* ---------- utilitare ---------- */
+const $  = (sel, root) => (root || document).querySelector(sel);
+const $$ = (sel, root) => Array.prototype.slice.call((root || document).querySelectorAll(sel));
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, function(c){
+    return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+  });
+}
+function nowISO(){ return new Date().toISOString(); }
+function relTime(iso){
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (diff < 60) return "acum";
+  if (diff < 3600) return Math.floor(diff/60) + "m";
+  if (diff < 86400) return Math.floor(diff/3600) + "h";
+  if (diff < 86400*7) return Math.floor(diff/86400) + "z";
+  return new Date(iso).toLocaleDateString("ro-RO", {day:"numeric", month:"short"});
+}
+function deriveTitle(text){
+  const t = text.trim().replace(/\s+/g, " ");
+  return t.length > 48 ? t.slice(0, 48) + "…" : (t || "Conversație nouă");
+}
+function autoGrow(el){
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 200) + "px";
+}
+
+/* ---------- stocare sigură (fallback pe memorie dacă localStorage nu e disponibil / e plin) ---------- */
+const Store = {
+  _mem: {},
+  _warned: false,
+  get(key, fallback){
+    try {
+      const v = localStorage.getItem(key);
+      return v !== null ? JSON.parse(v) : fallback;
+    } catch(e){
+      return Object.prototype.hasOwnProperty.call(this._mem, key) ? this._mem[key] : fallback;
+    }
+  },
+  set(key, value){
+    try { localStorage.setItem(key, JSON.stringify(value)); this._warned = false; return true; }
+    catch(e){
+      this._mem[key] = value;
+      if (!this._warned){
+        this._warned = true;
+        setTimeout(function(){
+          toast("Browserul nu poate salva (spațiu plin sau stocare blocată). Modificările rămân doar în această sesiune — exportă conversațiile.", "error");
+        }, 0);
+      }
+      return false;
+    }
+  },
+  wipe(){
+    this._mem = {};
+    try {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++){
+        const k = localStorage.key(i);
+        if (k && k.indexOf("nexus:") === 0) keys.push(k);
+      }
+      keys.forEach(function(k){ localStorage.removeItem(k); });
+    } catch(e){ /* stocare indisponibilă — nimic de șters */ }
+  }
+};
+
+/* ---------- meta furnizori ---------- */
+const PROVIDER_META = {
+  anthropic: { label: "Anthropic", color: "var(--line-anthropic)", needsKey: true },
+  openai:    { label: "OpenAI",    color: "var(--line-openai)",    needsKey: true },
+  google:    { label: "Google",    color: "var(--line-google)",    needsKey: true },
+  custom:    { label: "Personalizat", color: "var(--line-custom)", needsKey: false }
+};
+const PROVIDER_ORDER = ["anthropic", "openai", "google", "custom"];
+
+/* Sugestii de modele — doar SUGESTII, nu o listă garantată: numele se schimbă des.
+   Verificate manual în documentațiile oficiale la 2026-10-08 (platform.claude.com/docs/en/models/overview,
+   developers.openai.com/api/docs/models, ai.google.dev/gemini-api/docs/models).
+   Lista e editabilă în Setări și poate fi reîncărcată din API-ul furnizorului cu cheia ta. */
+const MODELS_CHECKED_ON = "2026-10-08";
+const MODEL_SUGGESTIONS = {
+  anthropic: ["claude-sonnet-5-5", "claude-opus-5-5", "claude-haiku-5-5", "claude-fable-5-1"],
+  openai:    ["gpt-6-astra", "gpt-6.1-sol", "gpt-6-luna"],
+  google:    ["gemini-3.8-flash", "gemini-3.1-pro-preview", "gemini-3.5-flash", "gemini-3.1-flash-lite"],
+  custom:    []
+};
+const MODEL_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._:\/@+-]{0,99}$/;
+/* limite de trimitere (memorie / cost): ultimele N mesaje, maxim M caractere */
+const MAX_HISTORY_MESSAGES = 100;
+const MAX_HISTORY_CHARS = 300000;
+const IDLE_TIMEOUT_MS = 300000;
+
+/* ---------- agenți predefiniți (nu sunt Codex/Cowork în sine — vezi notă în Setări) ---------- */
+const BUILTIN_PERSONAS = [
+  { id:"general", builtIn:true, icon:"◆", name:"General",
+    systemPrompt:"Ești un asistent AI general: util, clar și concis. Răspunzi în limba în care ești întrebat.",
+    provider:"anthropic", model:"claude-sonnet-5-5" },
+  { id:"cod", builtIn:true, icon:"</>", name:"Cod",
+    systemPrompt:"Ești un agent de programare. Scrii cod corect, testabil și clar. Explici pe scurt deciziile tehnice importante, semnalezi riscurile sau presupunerile, și preferi soluții simple, mentenabile în locul celor spectaculoase.",
+    provider:"openai", model:"gpt-6-astra" },
+  { id:"cowork", builtIn:true, icon:"▤", name:"Cowork",
+    systemPrompt:"Ești un asistent de cunoaștere și organizare a muncii: ajuți la redactare, sinteze, planificare și structurare de documente. Ești riguros, structurat, și îți asumi explicit presupunerile pe care le faci.",
+    provider:"anthropic", model:"claude-sonnet-5-5" },
+  { id:"cercetare", builtIn:true, icon:"◎", name:"Cercetare",
+    systemPrompt:"Ești un agent de cercetare: analizezi surse, compari perspective și eviți afirmațiile nesusținute. Semnalezi clar unde informația e incertă, contestată sau depășește ce poți verifica.",
+    provider:"google", model:"gemini-3.8-flash" }
+];
+
+/* ---------- stare aplicație ---------- */
+let state = {
+  conversations: [],
+  currentConvId: null,
+  settings: {
+    providers: {
+      anthropic: { apiKey:"", defaultModel:"claude-sonnet-5-5" },
+      openai:    { apiKey:"", defaultModel:"gpt-6-astra" },
+      google:    { apiKey:"", defaultModel:"gemini-3.8-flash" },
+      custom:    { apiKey:"", baseUrl:"", defaultModel:"", label:"Personalizat" }
+    },
+    personas: [],
+    modelLists: {}, // { providerId: [model, ...] } — suprascrie sugestiile implicite
+    connTest: {} // { providerId: 'ok' | 'err' | undefined }
+  }
+};
+
+function allPersonas(){ return BUILTIN_PERSONAS.concat(state.settings.personas); }
+function findPersona(id){
+  const all = allPersonas();
+  for (let i=0;i<all.length;i++) if (all[i].id === id) return all[i];
+  return BUILTIN_PERSONAS[0];
+}
+function getCurrentConversation(){
+  for (let i=0;i<state.conversations.length;i++) if (state.conversations[i].id === state.currentConvId) return state.conversations[i];
+  return null;
+}
+
+/* ---------- sanitizare (date din localStorage sau din fișiere importate = nesigure) ---------- */
+const SAFE_ID_RE = /^[A-Za-z0-9_-]{1,64}$/;
+const BUILTIN_IDS = BUILTIN_PERSONAS.map(function(p){ return p.id; });
+function cleanId(v){ return (typeof v === "string" && SAFE_ID_RE.test(v)) ? v : uid(); }
+function cleanStr(v, max){ return typeof v === "string" ? v.slice(0, max) : ""; }
+function cleanProvider(v){ return PROVIDER_ORDER.indexOf(v) !== -1 ? v : "anthropic"; }
+function cleanDate(v){ return (typeof v === "string" && !isNaN(Date.parse(v))) ? v : nowISO(); }
+function cleanPersona(p){
+  if (!p || typeof p !== "object") return null;
+  const name = cleanStr(p.name, 60).trim();
+  const sp = cleanStr(p.systemPrompt, 8000).trim();
+  if (!name || !sp) return null;
+  let id = cleanId(p.id);
+  if (BUILTIN_IDS.indexOf(id) !== -1) id = "custom-" + uid();
+  return { id:id, builtIn:false, icon:"✦", name:name, systemPrompt:sp, provider:cleanProvider(p.provider), model:cleanStr(p.model, 100).trim() };
+}
+function cleanMessage(m){
+  if (!m || typeof m !== "object") return null;
+  if (m.role !== "user" && m.role !== "assistant") return null;
+  const out = { id:cleanId(m.id), role:m.role, content:cleanStr(m.content, 400000), createdAt:cleanDate(m.createdAt) };
+  if (m.role === "assistant"){
+    out.provider = cleanProvider(m.provider);
+    out.model = cleanStr(m.model, 100);
+    if (m.error === true) out.error = true;
+  }
+  return out; // „pending" nu se păstrează niciodată
+}
+function cleanConversation(c){
+  if (!c || typeof c !== "object" || !Array.isArray(c.messages)) return null;
+  return {
+    id:cleanId(c.id), title:cleanStr(c.title, 80), createdAt:cleanDate(c.createdAt), updatedAt:cleanDate(c.updatedAt),
+    personaId:cleanId(c.personaId || "general"), provider:cleanProvider(c.provider), model:cleanStr(c.model, 100),
+    systemPromptOverride:cleanStr(c.systemPromptOverride, 8000),
+    messages:c.messages.slice(0, 5000).map(cleanMessage).filter(Boolean)
+  };
+}
+function cleanModelList(arr){
+  if (!Array.isArray(arr)) return [];
+  const out = [];
+  arr.forEach(function(m){
+    if (typeof m === "string" && MODEL_ID_RE.test(m.trim()) && out.indexOf(m.trim()) === -1) out.push(m.trim());
+  });
+  return out.slice(0, 200);
+}
+
+/* ---------- persistență ---------- */
+function loadState(){
+  const convs = Store.get("nexus:conversations", []);
+  state.conversations = Array.isArray(convs) ? convs.slice(0, 1000).map(cleanConversation).filter(Boolean) : [];
+  const cur = Store.get("nexus:currentConvId", null);
+  state.currentConvId = typeof cur === "string" ? cur : null;
+  const savedSettings = Store.get("nexus:settings", null);
+  if (savedSettings && typeof savedSettings === "object"){
+    const sp = savedSettings.providers && typeof savedSettings.providers === "object" ? savedSettings.providers : {};
+    PROVIDER_ORDER.forEach(function(id){
+      const src = sp[id];
+      if (!src || typeof src !== "object") return;
+      const dst = state.settings.providers[id];
+      ["apiKey", "defaultModel", "baseUrl", "label"].forEach(function(f){
+        if (typeof src[f] === "string" && (f in dst)) dst[f] = src[f].slice(0, 500);
+      });
+    });
+    state.settings.personas = Array.isArray(savedSettings.personas) ? savedSettings.personas.map(cleanPersona).filter(Boolean) : [];
+    const ml = savedSettings.modelLists && typeof savedSettings.modelLists === "object" ? savedSettings.modelLists : {};
+    PROVIDER_ORDER.forEach(function(id){ const l = cleanModelList(ml[id]); if (l.length) state.settings.modelLists[id] = l; });
+  }
+}
+function saveConversations(){ Store.set("nexus:conversations", state.conversations); }
+function saveSettings(){ Store.set("nexus:settings", { providers: state.settings.providers, personas: state.settings.personas, modelLists: state.settings.modelLists }); }
+function saveCurrentConvId(){ Store.set("nexus:currentConvId", state.currentConvId); }
+function modelListFor(providerId){
+  const custom = state.settings.modelLists[providerId];
+  return (custom && custom.length) ? custom : (MODEL_SUGGESTIONS[providerId] || []);
+}
+
+/* ============================================================
+   ADAPTOARE FURNIZORI
+   Fiecare funcție trimite cererea direct către endpoint-ul oficial
+   al furnizorului, cu cheia introdusă de utilizator. Nimic nu trece
+   printr-un server intermediar al acestei aplicații (nu există unul).
+   ============================================================ */
+
+async function safeErrText(resp){
+  try {
+    const j = await resp.clone().json();
+    if (j && j.error) return j.error.message || j.error.type || JSON.stringify(j.error).slice(0,300);
+    return JSON.stringify(j).slice(0,300);
+  } catch(e){
+    try { return (await resp.text()).slice(0,300) || resp.statusText; }
+    catch(e2){ return resp.statusText || ("HTTP " + resp.status); }
+  }
+}
+/* nu lăsa cheia să ajungă în mesaje de eroare salvate / exportate */
+function redactKey(text, key){
+  if (!key || key.length < 8) return String(text);
+  return String(text).split(key).join("[cheie]");
+}
+async function httpError(label, resp, key){
+  const detail = redactKey(await safeErrText(resp), key);
+  let hint = "";
+  const st = resp.status;
+  if (st === 401) hint = "Cheia API a fost respinsă (lipsă, greșită sau expirată). Verifică-o în Setări.";
+  else if (st === 403) hint = "Acces interzis: cheia nu are drept pe acest model/regiune sau contul nu e activ.";
+  else if (st === 404) hint = "Model sau endpoint inexistent. Verifică numele modelului (Setări → «Actualizează lista»).";
+  else if (st === 429){
+    const ra = resp.headers && resp.headers.get ? resp.headers.get("retry-after") : null;
+    hint = "Prea multe cereri sau cota/creditul s-a epuizat." + (ra ? " Reîncearcă peste ~" + ra + " s." : "");
+  }
+  else if (st === 529 || st >= 500) hint = "Serviciul furnizorului e indisponibil sau supraîncărcat; reîncearcă peste puțin timp.";
+  const e = new Error(label + " (" + st + "): " + (hint ? hint + " " : "") + "Detalii: " + detail);
+  e.status = st;
+  return e;
+}
+
+/* cititor generic pentru stream-uri SSE ("data: {...}\n\n").
+   Erorile aruncate de onEvent se propagă (nu mai sunt înghițite); doar JSON-ul invalid e ignorat. */
+async function readSSE(resp, onEvent, onChunk){
+  if (!resp.body) throw new Error("Răspuns fără flux de date (stream indisponibil în acest browser).");
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  function handleLine(line){
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.indexOf("data:") !== 0) return;
+    const data = trimmed.slice(5).trim();
+    if (!data || data === "[DONE]") return;
+    let evt;
+    try { evt = JSON.parse(data); } catch(e){ return; }
+    onEvent(evt);
+  }
+  try {
+    while (true){
+      const res = await reader.read();
+      if (res.done) break;
+      if (onChunk) onChunk();
+      buffer += decoder.decode(res.value, { stream:true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop();
+      lines.forEach(handleLine);
+    }
+    buffer += decoder.decode();
+    if (buffer) handleLine(buffer);
+  } finally {
+    try { reader.cancel().catch(function(){}); } catch(e){}
+  }
+}
+
+/* Anthropic — Messages API, streaming.
+   Necesită header-ul anthropic-dangerous-direct-browser-access pentru
+   apeluri directe din browser (altfel API-ul respinge cererea CORS). */
+async function callAnthropic(opts){
+  assertHeaderSafe(opts.apiKey);
+  const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{
+      "content-type":"application/json",
+      "x-api-key": opts.apiKey,
+      "anthropic-version":"2023-06-01",
+      "anthropic-dangerous-direct-browser-access":"true"
+    },
+    body: JSON.stringify(Object.assign({
+      model: opts.model,
+      system: opts.system || undefined,
+      messages: opts.messages.map(function(m){ return { role:m.role, content:m.content }; }),
+      max_tokens: opts.maxTokens || 4096,
+      stream:true
+    }, opts.temperature != null ? { temperature: opts.temperature } : {})),
+    signal: opts.signal
+  });
+  if (!resp.ok) throw await httpError("Anthropic", resp, opts.apiKey);
+  if (opts.touch) opts.touch();
+  await readSSE(resp, function(evt){
+    if (evt.type === "content_block_delta" && evt.delta && evt.delta.type === "text_delta"){
+      opts.onDelta(evt.delta.text);
+    } else if (evt.type === "error" && evt.error){
+      throw new Error("Anthropic (stream): " + redactKey(evt.error.message || evt.error.type || "eroare în timpul răspunsului", opts.apiKey));
+    }
+  }, opts.touch);
+}
+
+/* OpenAI / orice endpoint compatibil OpenAI (Chat Completions), streaming.
+   Folosit atât pentru furnizorul "openai" cât și pentru "custom". */
+async function callOpenAICompatible(opts){
+  const base = opts.custom ? normalizeBaseUrl(opts.baseUrl) : "https://api.openai.com";
+  if (opts.custom){
+    if (!base) throw new Error("Completează URL-ul de bază al endpoint-ului personalizat în Setări.");
+    const bad = checkCustomUrl(base);
+    if (bad) throw new Error("Endpoint personalizat: " + bad);
+  }
+  const url = base + "/v1/chat/completions";
+  const wireMessages = [];
+  if (opts.system) wireMessages.push({ role:"system", content: opts.system });
+  opts.messages.forEach(function(m){ wireMessages.push({ role:m.role, content:m.content }); });
+  const headers = { "content-type":"application/json" };
+  if (opts.apiKey){ assertHeaderSafe(opts.apiKey); headers["Authorization"] = "Bearer " + opts.apiKey; }
+  const resp = await fetch(url, {
+    method:"POST",
+    headers: headers,
+    body: JSON.stringify(Object.assign({
+      model: opts.model,
+      messages: wireMessages,
+      stream:true
+    }, opts.temperature != null ? { temperature: opts.temperature } : {})),
+    signal: opts.signal
+  });
+  if (!resp.ok) throw await httpError(opts.label || "OpenAI", resp, opts.apiKey);
+  if (opts.touch) opts.touch();
+  await readSSE(resp, function(evt){
+    if (evt && evt.error) throw new Error((opts.label || "OpenAI") + " (stream): " + redactKey(evt.error.message || "eroare în timpul răspunsului", opts.apiKey));
+    const choice = evt.choices && evt.choices[0];
+    const delta = choice && choice.delta && choice.delta.content;
+    if (delta) opts.onDelta(delta);
+  }, opts.touch);
+}
+
+/* Google Gemini — generateContent (FĂRĂ streaming: un singur răspuns complet,
+   afișat la final; „Oprește" anulează cererea). */
+async function callGemini(opts){
+  assertHeaderSafe(opts.apiKey);
+  /* cheia merge în antetul x-goog-api-key, nu în URL (URL-urile ajung în loguri/istoric) */
+  const url = "https://generativelanguage.googleapis.com/v1beta/models/" +
+    encodeURIComponent(opts.model) + ":generateContent";
+  const contents = opts.messages.map(function(m){
+    return { role: m.role === "assistant" ? "model" : "user", parts:[{ text: m.content }] };
+  });
+  const body = { contents: contents };
+  if (opts.system) body.systemInstruction = { parts:[{ text: opts.system }] };
+  if (opts.temperature != null) body.generationConfig = { temperature: opts.temperature };
+  const resp = await fetch(url, {
+    method:"POST",
+    headers:{ "content-type":"application/json", "x-goog-api-key": opts.apiKey },
+    body: JSON.stringify(body),
+    signal: opts.signal
+  });
+  if (!resp.ok) throw await httpError("Google", resp, opts.apiKey);
+  if (opts.touch) opts.touch();
+  const data = await resp.json();
+  const cand = data.candidates && data.candidates[0];
+  const parts = (cand && cand.content && cand.content.parts) || [];
+  const text = parts.map(function(p){ return p.text || ""; }).join("");
+  if (!text && cand && cand.finishReason && cand.finishReason !== "STOP"){
+    throw new Error("Google: răspuns blocat (" + cand.finishReason + ")");
+  }
+  opts.onDelta(text);
+}
+
+/* chei cu spații/diacritice fac fetch() să arunce TypeError obscur */
+function assertHeaderSafe(key){
+  if (key && !/^[\x21-\x7E]+$/.test(key)) throw new Error("Cheia API conține spații sau caractere nepermise (probabil un copy-paste greșit). Introdu-o din nou în Setări.");
+}
+function normalizeBaseUrl(u){
+  return String(u || "").trim().replace(/\/+$/, "").replace(/\/chat\/completions$/, "").replace(/\/v1$/, "");
+}
+function checkCustomUrl(u){
+  let p;
+  try { p = new URL(u); } catch(e){ return "URL invalid."; }
+  if (p.protocol !== "https:" && p.protocol !== "http:") return "sunt permise doar http:// și https://.";
+  if (p.protocol === "http:" && !/^(localhost|127\.0\.0\.1)$/.test(p.hostname))
+    return "http:// către un host non-local ar trimite cheia și mesajele necriptat. Folosește https://.";
+  return "";
+}
+/* explică de ce a eșuat fetch() (TypeError = rețea / CORS / CSP / extensie) */
+function explainError(err, providerId){
+  if (err && err.name === "TypeError"){
+    const label = PROVIDER_META[providerId] ? PROVIDER_META[providerId].label : providerId;
+    let msg = "Nu s-a putut contacta " + label + ": lipsă rețea, cerere blocată de CORS, de o extensie (adblock/VPN) sau de politica CSP a paginii.";
+    if (providerId === "custom") msg += " Pentru un endpoint personalizat extern (nu localhost), CSP-ul paginii trebuie extins în copia ta locală — vezi README, secțiunea «Endpoint personalizat». Pentru Ollama local setează OLLAMA_ORIGINS.";
+    return msg;
+  }
+  return (err && err.message) || "Eroare necunoscută la apelul API.";
+}
+
+/* dispecer: alege adaptorul potrivit pentru un furnizor */
+async function dispatchProvider(providerId, opts){
+  if (providerId === "anthropic") return callAnthropic(opts);
+  if (providerId === "openai") return callOpenAICompatible(Object.assign({label:"OpenAI"}, opts));
+  if (providerId === "google") return callGemini(opts);
+  if (providerId === "custom") return callOpenAICompatible(Object.assign({label:"Endpoint personalizat", custom:true}, opts));
+  throw new Error("Furnizor necunoscut: " + providerId);
+}
+
+/* ============================================================
+   RANDATOR MARKDOWN MINIMAL (fără biblioteci externe)
+   Acoperă: blocuri de cod, cod inline, bold/italic, linkuri,
+   titluri, liste, paragrafe. Suficient pentru răspunsuri de chat,
+   nu un parser Markdown complet.
+   ============================================================ */
+function renderMarkdown(raw){
+  if (!raw) return "";
+  const codeBlocks = [], inlineCodes = [], links = [];
+  /* NUL e folosit intern ca delimitator de placeholder: nu-l lăsa să vină din text */
+  let text = String(raw).replace(/\u0000/g, "").replace(/```(\w*)\n?([\s\S]*?)```/g, function(_, lang, code){
+    const idx = codeBlocks.length;
+    codeBlocks.push({ lang: lang || "", code: code.replace(/\n$/, "") });
+    return "\u0000CB" + idx + "\u0000";
+  });
+
+  /* orice HTML brut din răspuns devine text: totul e escapat ÎNAINTE de orice transformare */
+  text = escapeHtml(text);
+
+  // cod inline (în placeholder, ca să nu fie formatat bold/italic în interior)
+  text = text.replace(/`([^`\n]+)`/g, function(_, code){
+    inlineCodes.push(code);
+    return "\u0000IC" + (inlineCodes.length - 1) + "\u0000";
+  });
+  function inlineFmt(t){
+    t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    return t.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>");
+  }
+  // linkuri: DOAR http(s); URL-ul e deja escapat; ![img](url) devine link, nu imagine (fără pixeli de urmărire)
+  text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, function(_, label, url){
+    links.push('<a href="' + url + '" title="' + url + '" target="_blank" rel="noopener noreferrer">' + inlineFmt(label) + '</a>');
+    return "\u0000LK" + (links.length - 1) + "\u0000";
+  });
+  text = inlineFmt(text);
+  // titluri
+  text = text.replace(/^### (.*)$/gm, "<h3>$1</h3>");
+  text = text.replace(/^## (.*)$/gm, "<h2>$1</h2>");
+  text = text.replace(/^# (.*)$/gm, "<h1>$1</h1>");
+  // liste neordonate
+  text = text.replace(/(^|\n)((?:[-*] .+(?:\n|$))+)/g, function(_, pre, block){
+    const items = block.replace(/\n$/, "").split("\n").map(function(l){
+      return "<li>" + l.replace(/^[-*]\s+/, "") + "</li>";
+    }).join("");
+    return pre + "<ul>" + items + "</ul>";
+  });
+  // liste ordonate
+  text = text.replace(/(^|\n)((?:\d+\. .+(?:\n|$))+)/g, function(_, pre, block){
+    const items = block.replace(/\n$/, "").split("\n").map(function(l){
+      return "<li>" + l.replace(/^\d+\.\s+/, "") + "</li>";
+    }).join("");
+    return pre + "<ol>" + items + "</ol>";
+  });
+  // paragrafe (blocurile deja transformate în h1-3/ul/ol/placeholder de cod rămân neatinse)
+  text = text.split(/\n{2,}/).map(function(block){
+    const t = block.trim();
+    if (!t) return "";
+    if (/^<(h1|h2|h3|ul|ol)/.test(t)) return t;
+    if (/^\u0000CB\d+\u0000$/.test(t)) return t;
+    return "<p>" + t.replace(/\n/g, "<br>") + "</p>";
+  }).join("\n");
+
+  // restaurare linkuri, cod inline, blocuri de cod
+  text = text.replace(/\u0000LK(\d+)\u0000/g, function(_, i){ return links[parseInt(i, 10)] || ""; });
+  text = text.replace(/\u0000IC(\d+)\u0000/g, function(_, i){ return "<code>" + (inlineCodes[parseInt(i, 10)] || "") + "</code>"; });
+  text = text.replace(/\u0000CB(\d+)\u0000/g, function(_, idxStr){
+    const idx = parseInt(idxStr, 10);
+    const block = codeBlocks[idx];
+    if (!block) return "";
+    const langLabel = block.lang ? '<span class="code-lang">' + escapeHtml(block.lang) + "</span>" : "<span></span>";
+    return '<div class="code-block"><div class="code-block-header">' + langLabel +
+      '<button type="button" class="btn-copy-code">Copiază</button></div><pre><code>' +
+      escapeHtml(block.code) + "</code></pre></div>";
+  });
+
+  return text;
+}
+
+/* ============================================================
+   TEST CONEXIUNE — apel minimal, pentru a verifica rapid o cheie
+   ============================================================ */
+async function testConnection(providerId){
+  const cfg = state.settings.providers[providerId];
+  const model = (cfg && cfg.defaultModel) || modelListFor(providerId)[0];
+  if (providerId !== "custom" && !(cfg && cfg.apiKey)) throw new Error("Lipsește cheia API.");
+  if (!model) throw new Error("Lipsește modelul implicit.");
+  /* cerere minimă; fluxul e întrerupt la primul fragment ca să nu consume tokeni degeaba */
+  const ctl = new AbortController();
+  let gotSomething = false, timedOut = false;
+  const timer = setTimeout(function(){ timedOut = true; ctl.abort(); }, 30000);
+  const opts = {
+    apiKey: cfg.apiKey, model: model, system: "Răspunde cu un singur cuvânt.", maxTokens: 16,
+    messages: [{ role:"user", content:"Salut" }], signal: ctl.signal,
+    onDelta: function(t){ if (t){ gotSomething = true; ctl.abort(); } }
+  };
+  if (providerId === "custom") opts.baseUrl = cfg.baseUrl;
+  try {
+    await dispatchProvider(providerId, opts);
+  } catch(e){
+    if (gotSomething && e && e.name === "AbortError") return true;
+    if (timedOut) throw new Error("Fără răspuns în 30 s.");
+    throw new Error(explainError(e, providerId));
+  } finally { clearTimeout(timer); }
+  return gotSomething;
+}
+
+/* Lista de modele disponibile pentru cheia ta, direct de la furnizor (nu din lista hardcodată). */
+async function fetchModelIds(providerId){
+  const cfg = state.settings.providers[providerId];
+  if (providerId !== "custom" && !cfg.apiKey) throw new Error("Lipsește cheia API.");
+  const ctl = new AbortController();
+  const timer = setTimeout(function(){ ctl.abort(); }, 30000);
+  try {
+    let resp, ids = [];
+    if (providerId === "anthropic"){
+      assertHeaderSafe(cfg.apiKey);
+      resp = await fetch("https://api.anthropic.com/v1/models?limit=100", { signal: ctl.signal, headers:{
+        "x-api-key": cfg.apiKey, "anthropic-version":"2023-06-01", "anthropic-dangerous-direct-browser-access":"true" } });
+      if (!resp.ok) throw await httpError("Anthropic", resp, cfg.apiKey);
+      ids = ((await resp.json()).data || []).map(function(m){ return m.id; });
+    } else if (providerId === "google"){
+      assertHeaderSafe(cfg.apiKey);
+      resp = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200", { signal: ctl.signal, headers:{ "x-goog-api-key": cfg.apiKey } });
+      if (!resp.ok) throw await httpError("Google", resp, cfg.apiKey);
+      ids = ((await resp.json()).models || []).filter(function(m){
+        return Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.indexOf("generateContent") !== -1;
+      }).map(function(m){ return String(m.name || "").replace(/^models\//, ""); });
+    } else {
+      const base = providerId === "custom" ? normalizeBaseUrl(cfg.baseUrl) : "https://api.openai.com";
+      if (!base) throw new Error("Completează URL-ul de bază.");
+      if (providerId === "custom"){ const bad = checkCustomUrl(base); if (bad) throw new Error(bad); }
+      const headers = {};
+      if (cfg.apiKey){ assertHeaderSafe(cfg.apiKey); headers["Authorization"] = "Bearer " + cfg.apiKey; }
+      resp = await fetch(base + "/v1/models", { signal: ctl.signal, headers: headers });
+      if (!resp.ok) throw await httpError(providerId === "custom" ? "Endpoint personalizat" : "OpenAI", resp, cfg.apiKey);
+      ids = ((await resp.json()).data || []).map(function(m){ return m.id; });
+      if (providerId === "openai") ids = ids.filter(function(id){ return !/embed|whisper|tts|dall-e|image|moderation|transcribe|realtime|audio|live/i.test(id); });
+    }
+    ids = cleanModelList(ids).sort();
+    if (!ids.length) throw new Error("Furnizorul n-a returnat niciun model utilizabil.");
+    return ids;
+  } catch(e){
+    if (e && e.name === "AbortError") throw new Error("Fără răspuns în 30 s.");
+    if (e && e.name === "TypeError") throw new Error(explainError(e, providerId));
+    throw e;
+  } finally { clearTimeout(timer); }
+}
+
+/* ============================================================
+   NOTIFICĂRI (toast)
+   ============================================================ */
+function toast(msg, type){
+  const el = document.createElement("div");
+  el.className = "toast" + (type ? " " + type : "");
+  el.textContent = msg;
+  $("#toast-container").appendChild(el);
+  setTimeout(function(){ el.remove(); }, 4200);
+}
+
+/* ============================================================
+   RANDARE — panou linii (patch panel)
+   ============================================================ */
+function renderPatchPanel(){
+  const rows = PROVIDER_ORDER.map(function(id){
+    const meta = PROVIDER_META[id];
+    const cfg = state.settings.providers[id];
+    const hasKey = id === "custom" ? !!(cfg.baseUrl) : !!(cfg.apiKey);
+    const test = state.settings.connTest[id];
+    let ledClass = "";
+    if (test === "ok") ledClass = "ok";
+    else if (test === "err") ledClass = "err";
+    return '<div class="patch-row"><span class="jack" style="background:' + meta.color + (hasKey ? "" : ";opacity:.3") +
+      '"></span><span class="name">' + meta.label + '</span><span class="led ' + ledClass + '"></span></div>';
+  }).join("");
+  $("#patch-rows").innerHTML = rows;
+}
+
+/* ============================================================
+   RANDARE — listă conversații
+   ============================================================ */
+function renderConversationList(){
+  const list = $("#conv-list");
+  if (!state.conversations.length){
+    list.innerHTML = '<p class="conv-empty-hint">Nicio conversație încă.</p>';
+    return;
+  }
+  const sorted = state.conversations.slice().sort(function(a,b){ return new Date(b.updatedAt) - new Date(a.updatedAt); });
+  list.innerHTML = sorted.map(function(c){
+    const persona = findPersona(c.personaId);
+    const meta = PROVIDER_META[c.provider] || PROVIDER_META.anthropic;
+    const active = c.id === state.currentConvId;
+    return '<div class="conv-item' + (active ? " active" : "") + '">' +
+      '<button type="button" class="conv-main" data-conv-id="' + escapeHtml(c.id) + '"' + (active ? ' aria-current="true"' : "") + '>' +
+      '<span class="dot" style="background:' + meta.color + '"></span>' +
+      '<span class="meta"><span class="title">' + escapeHtml(c.title || "Conversație nouă") + '</span>' +
+      '<span class="sub">' + escapeHtml(persona.icon + " " + persona.name) + " · " + relTime(c.updatedAt) + '</span></span></button>' +
+      '<button type="button" class="btn-del" data-del-id="' + escapeHtml(c.id) + '" aria-label="Șterge conversația ' + escapeHtml(c.title || "nouă") + '">✕</button></div>';
+  }).join("");
+}
+
+/* ============================================================
+   RANDARE — bară de sus (titlu, agent, furnizor, model)
+   ============================================================ */
+function renderTopbar(){
+  const conv = getCurrentConversation();
+  $("#conv-title").value = conv ? (conv.title || "") : "";
+  $("#conv-title").disabled = !conv;
+
+  const personaSelect = $("#persona-select");
+  personaSelect.innerHTML = allPersonas().map(function(p){
+    return '<option value="' + escapeHtml(p.id) + '">' + escapeHtml(p.icon + " " + p.name) + "</option>";
+  }).join("");
+  if (conv) personaSelect.value = conv.personaId;
+
+  const providerSelect = $("#provider-select");
+  providerSelect.innerHTML = PROVIDER_ORDER.map(function(id){
+    return '<option value="' + id + '">' + PROVIDER_META[id].label + "</option>";
+  }).join("");
+  if (conv) providerSelect.value = conv.provider;
+
+  renderModelDatalist(conv ? conv.provider : "anthropic");
+  $("#model-input").value = conv ? (conv.model || "") : "";
+
+  const disabled = !conv;
+  [personaSelect, providerSelect, $("#model-input"), $("#input-text"), $("#btn-send")].forEach(function(el){ el.disabled = disabled; });
+}
+function renderModelDatalist(providerId){
+  const list = modelListFor(providerId);
+  $("#model-suggestions").innerHTML = list.map(function(m){ return '<option value="' + escapeHtml(m) + '">'; }).join("");
+}
+
+/* ============================================================
+   RANDARE — mesaje
+   ============================================================ */
+function bubbleAvatarLabel(role, providerId){
+  if (role === "user") return "Tu";
+  const meta = PROVIDER_META[providerId];
+  return meta ? meta.label.slice(0,2).toUpperCase() : "AI";
+}
+function renderMessages(){
+  const conv = getCurrentConversation();
+  const wrap = $("#messages-inner");
+  updateEmptyState();
+  if (!conv){ wrap.innerHTML = ""; return; }
+  wrap.innerHTML = conv.messages.map(function(m){
+    const cls = "msg " + m.role + (m.pending ? " streaming" : "") + (m.error ? " error" : "");
+    const avatarStyle = m.role === "assistant" ? ' style="border-color:' + ((PROVIDER_META[m.provider]||{}).color || "var(--border)") + '"' : "";
+    const bodyHtml = m.pending ? escapeHtml(m.content) : renderMarkdown(m.content);
+    return '<div class="' + cls + '" data-msg-id="' + escapeHtml(m.id) + '">' +
+      '<div class="avatar"' + avatarStyle + '>' + bubbleAvatarLabel(m.role, m.provider) + '</div>' +
+      '<div class="bubble-wrap"><div class="bubble">' + bodyHtml + '</div></div></div>';
+  }).join("");
+  scrollMessagesToBottom(true);
+}
+function paintBubble(msg, final){
+  const node = document.querySelector('[data-msg-id="' + msg.id + '"]');
+  if (!node) return;
+  const bubble = node.querySelector(".bubble");
+  const nearBottom = isScrolledNearBottom();
+  if (final){
+    node.classList.remove("streaming");
+    if (msg.error) node.classList.add("error");
+    bubble.innerHTML = renderMarkdown(msg.content);
+  } else {
+    bubble.textContent = msg.content;
+  }
+  if (nearBottom) scrollMessagesToBottom();
+}
+/* actualizările din timpul streamului sunt coalizate pe requestAnimationFrame (O(n) per cadru, nu per fragment) */
+let bubbleRaf = 0, bubbleLatest = null;
+function updateMessageBubble(msg, final){
+  if (!final){
+    bubbleLatest = msg;
+    if (!bubbleRaf) bubbleRaf = requestAnimationFrame(function(){
+      bubbleRaf = 0;
+      if (bubbleLatest) paintBubble(bubbleLatest, false);
+    });
+    return;
+  }
+  if (bubbleRaf){ cancelAnimationFrame(bubbleRaf); bubbleRaf = 0; }
+  bubbleLatest = null;
+  paintBubble(msg, true);
+}
+function announce(text){ const el = $("#sr-status"); if (el){ el.textContent = ""; setTimeout(function(){ el.textContent = text; }, 30); } }
+function isScrolledNearBottom(){
+  const el = $("#messages");
+  return el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+}
+function scrollMessagesToBottom(force){
+  const el = $("#messages");
+  if (force || isScrolledNearBottom()) el.scrollTop = el.scrollHeight;
+}
+function updateEmptyState(){
+  const conv = getCurrentConversation();
+  $("#empty-state").classList.toggle("hidden", !!conv);
+  $("#messages").classList.toggle("hidden", !conv);
+  $("#composer").classList.toggle("hidden", !conv);
+}
+
+/* ============================================================
+   RANDARE — panou Setări
+   ============================================================ */
+function providerSectionHtml(id){
+  const meta = PROVIDER_META[id];
+  const cfg = state.settings.providers[id];
+  const suggestions = modelListFor(id).map(function(m){ return '<option value="' + escapeHtml(m) + '">'; }).join("");
+  const test = state.settings.connTest[id];
+  const resultHtml = test === "ok" ? '<span class="test-result ok">✓ conectat</span>'
+    : test === "err" ? '<span class="test-result err">✗ eșuat</span>' : "";
+  const fid = function(f){ return "f-" + id + "-" + f; };
+  let extraFields = "";
+  if (id === "custom"){
+    extraFields =
+      '<div class="field"><label for="' + fid("label") + '">Etichetă</label><input type="text" id="' + fid("label") + '" data-field="label" value="' + escapeHtml(cfg.label||"") + '" placeholder="ex: Ollama local, OpenRouter, DeepSeek…"></div>' +
+      '<div class="field"><label for="' + fid("baseUrl") + '">URL bază (compatibil OpenAI; se adaugă /v1/chat/completions)</label><input type="text" id="' + fid("baseUrl") + '" data-field="baseUrl" value="' + escapeHtml(cfg.baseUrl||"") + '" placeholder="http://localhost:11434 sau https://openrouter.ai/api" autocomplete="off" spellcheck="false">' +
+      '<p class="hint">CSP-ul paginii permite implicit doar <code>localhost</code>/<code>127.0.0.1</code> pentru endpoint-uri personalizate. Pentru un host extern editezi o copie locală (README → «Endpoint personalizat»). Cheia, dacă există, se trimite ca <code>Authorization: Bearer</code> la acel URL.</p></div>';
+  }
+  const keyLabel = id === "custom" ? "Cheie API (opțional)" : "Cheie API";
+  const ml = state.settings.modelLists[id];
+  return '<div class="settings-section" data-provider="' + id + '">' +
+    '<div class="settings-section-title"><span class="dot" style="background:' + meta.color + '"></span>' + meta.label + '</div>' +
+    extraFields +
+    '<div class="field key-input-wrap"><label for="' + fid("apiKey") + '">' + keyLabel + '</label>' +
+    '<input type="password" class="key-field" id="' + fid("apiKey") + '" data-field="apiKey" value="' + escapeHtml(cfg.apiKey||"") + '" placeholder="sk-…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">' +
+    '<button type="button" class="btn-toggle-key" aria-label="Arată sau ascunde cheia ' + meta.label + '">arată</button></div>' +
+    '<div class="field"><label for="' + fid("defaultModel") + '">Model implicit</label>' +
+    '<input type="text" id="' + fid("defaultModel") + '" data-field="defaultModel" list="ms-' + id + '" value="' + escapeHtml(cfg.defaultModel||"") + '" autocomplete="off" spellcheck="false">' +
+    '<datalist id="ms-' + id + '">' + suggestions + '</datalist></div>' +
+    '<details class="add-persona"><summary style="cursor:pointer;font-size:12.5px;color:var(--text-dim);margin:2px 0 8px">Lista de modele sugerate (editabilă)</summary>' +
+      '<div class="field"><label for="' + fid("modelList") + '">Un model pe linie' + (ml && ml.length ? '' : ' (implicit: sugestii verificate la ' + MODELS_CHECKED_ON + ')') + '</label>' +
+      '<textarea id="' + fid("modelList") + '" data-field="modelList" rows="4" spellcheck="false">' + escapeHtml(modelListFor(id).join("\n")) + '</textarea>' +
+      '<p class="hint">Numele modelelor se schimbă des; câmpul „Model” acceptă oricum orice text. Butonul de mai jos cere lista de la furnizor cu cheia ta.</p></div>' +
+    '</details>' +
+    '<div class="field-row" style="flex-wrap:wrap"><button type="button" class="btn-test" data-test="' + id + '">Testează conexiunea</button>' +
+    '<button type="button" class="btn-test" data-fetch-models="' + id + '">Actualizează lista de modele</button>' +
+    (cfg.apiKey ? '<button type="button" class="btn-danger" data-clear-key="' + id + '">Șterge cheia</button>' : '') +
+    resultHtml + '</div>' +
+    '</div>';
+}
+
+function personaCardHtml(p){
+  const meta = PROVIDER_META[p.provider] || PROVIDER_META.anthropic;
+  const delBtn = p.builtIn ? "" : '<button type="button" class="btn-small-del" data-del-persona="' + escapeHtml(p.id) + '">✕ șterge</button>';
+  return '<div class="persona-card"><div class="persona-card-head"><strong>' + escapeHtml(p.icon + " " + p.name) + '</strong>' +
+    '<span class="badge" style="border-color:' + meta.color + '">' + meta.label + " · " + escapeHtml(p.model) + '</span></div>' +
+    '<p>' + escapeHtml(p.systemPrompt) + '</p>' + (delBtn ? '<div style="margin-top:8px;text-align:right">' + delBtn + '</div>' : '') +
+    '</div>';
+}
+
+function renderSettings(){
+  const providerSections = PROVIDER_ORDER.map(providerSectionHtml).join("");
+  const personaCards = allPersonas().map(personaCardHtml).join("");
+  const providerOptions = PROVIDER_ORDER.map(function(id){ return '<option value="' + id + '">' + PROVIDER_META[id].label + "</option>"; }).join("");
+
+  $("#settings-body").innerHTML =
+    '<div class="warn-box" id="privacy-warning" role="note"><strong>Citește înainte să introduci o cheie.</strong><ul>' +
+      '<li>Aceasta <strong>nu</strong> este o aplicație offline. Fiecare mesaj trimis pleacă direct din browser către furnizorul ales, împreună cu <strong>tot istoricul conversației</strong> (ultimele ' + MAX_HISTORY_MESSAGES + ' mesaje, max ~' + Math.round(MAX_HISTORY_CHARS/1000) + 'k caractere) și promptul agentului. Se aplică politicile de date ale furnizorului.</li>' +
+      '<li>Gazde contactate: <code>api.anthropic.com</code>, <code>api.openai.com</code>, <code>generativelanguage.googleapis.com</code> și endpoint-ul personalizat configurat (de obicei <code>localhost</code>). Nimic altceva; nu există server sau telemetrie a aplicației.</li>' +
+      '<li>Cheile API se salvează <strong>în clar</strong> în <code>localStorage</code> al acestui browser. Pot fi citite de oricine are acces la profilul browserului, de extensii rău intenționate sau de un atac XSS. Folosește chei dedicate cu limită de cheltuieli și revoc-le dacă ai dubii. Nu le introduce pe calculatoare publice sau partajate.</li>' +
+      '<li>Exportul conversațiilor <strong>nu</strong> include cheile. Conversațiile exportate pot însă conține orice ai scris sau lipit tu în ele.</li>' +
+    '</ul></div>' +
+    providerSections +
+    '<div class="settings-section">' +
+      '<div class="settings-section-title">Agenți</div>' +
+      '<div id="persona-cards">' + personaCards + '</div>' +
+      '<details class="add-persona"><summary style="cursor:pointer;font-size:12.5px;color:var(--text-dim);margin:6px 0">+ Agent personalizat</summary>' +
+        '<div style="margin-top:10px">' +
+        '<div class="field"><label for="np-name">Nume</label><input type="text" id="np-name" placeholder="ex: Redactor SF"></div>' +
+        '<div class="field"><label for="np-prompt">Prompt de sistem</label><textarea id="np-prompt" rows="3" placeholder="Ești…"></textarea></div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label for="np-provider">Furnizor</label><select id="np-provider">' + providerOptions + '</select></div>' +
+          '<div class="field"><label for="np-model">Model</label><input type="text" id="np-model" placeholder="model"></div>' +
+        '</div>' +
+        '<button type="button" class="btn-primary" id="btn-add-persona">Adaugă agent</button>' +
+        '</div></details>' +
+    '</div>' +
+    '<div class="settings-section">' +
+      '<p class="hint">„Cod” și „Cowork” sunt agenți (persona = prompt de sistem + furnizor + model) inspirați de Codex (OpenAI) și de Claude Cowork (Anthropic): folosesc modelele din spatele lor prin API-urile publice ale OpenAI și Anthropic, nu produsele complete — acelea rulează ca aplicații/agenți proprii (CLI, cloud, desktop) fără o interfață publică de conectare dintr-un fișier HTML. Poți schimba oricând furnizorul sau modelul fiecărui agent mai sus.</p>' +
+    '</div>' +
+    '<div class="settings-section">' +
+      '<div class="settings-section-title">Date locale</div>' +
+      '<p class="hint" style="margin:0 0 10px">Șterge din acest browser toate cheile, conversațiile, agenții și setările salvate de Nexus. Nu se poate anula (fă un Export înainte, dacă vrei conversațiile).</p>' +
+      '<button type="button" class="btn-danger" id="btn-wipe-all">Șterge toate datele locale</button>' +
+    '</div>';
+}
+
+function bindProviderField(providerId, field, value){
+  state.settings.providers[providerId][field] = value;
+  if (field === "apiKey" || field === "baseUrl") delete state.settings.connTest[providerId];
+  saveSettings();
+  renderPatchPanel();
+}
+
+/* delegare evenimente în interiorul panoului de Setări */
+$("#settings-body").addEventListener("input", function(e){
+  const t = e.target;
+  const section = t.closest("[data-provider]");
+  if (section && t.dataset.field){
+    if (t.dataset.field === "modelList"){
+      const pid = section.dataset.provider;
+      const list = cleanModelList(t.value.split("\n"));
+      if (list.length) state.settings.modelLists[pid] = list; else delete state.settings.modelLists[pid];
+      saveSettings();
+      const dl = document.getElementById("ms-" + pid);
+      if (dl) dl.innerHTML = modelListFor(pid).map(function(m){ return '<option value="' + escapeHtml(m) + '">'; }).join("");
+      const conv = getCurrentConversation();
+      if (conv && conv.provider === pid) renderModelDatalist(pid);
+      return;
+    }
+    bindProviderField(section.dataset.provider, t.dataset.field, t.dataset.field === "apiKey" ? t.value.trim() : t.value);
+  }
+});
+
+$("#settings-body").addEventListener("click", function(e){
+  const toggleBtn = e.target.closest(".btn-toggle-key");
+  if (toggleBtn){
+    const input = toggleBtn.parentElement.querySelector(".key-field");
+    const isPw = input.type === "password";
+    input.type = isPw ? "text" : "password";
+    toggleBtn.textContent = isPw ? "ascunde" : "arată";
+    return;
+  }
+  const testBtn = e.target.closest("[data-test]");
+  if (testBtn){
+    const id = testBtn.dataset.test;
+    testBtn.disabled = true;
+    testBtn.textContent = "Testez…";
+    testConnection(id).then(function(){
+      state.settings.connTest[id] = "ok";
+      toast(PROVIDER_META[id].label + ": conexiune reușită.", "success");
+    }).catch(function(err){
+      state.settings.connTest[id] = "err";
+      toast(PROVIDER_META[id].label + ": " + ((err && err.message) || "conexiune eșuată"), "error");
+    }).finally(function(){
+      renderSettings();
+      renderPatchPanel();
+    });
+    return;
+  }
+  const clearKey = e.target.closest("[data-clear-key]");
+  if (clearKey){
+    const id = clearKey.dataset.clearKey;
+    state.settings.providers[id].apiKey = "";
+    delete state.settings.connTest[id];
+    saveSettings();
+    renderSettings(); renderPatchPanel();
+    toast("Cheia " + PROVIDER_META[id].label + " a fost ștearsă din acest browser.", "success");
+    return;
+  }
+  const fetchBtn = e.target.closest("[data-fetch-models]");
+  if (fetchBtn){
+    const id = fetchBtn.dataset.fetchModels;
+    fetchBtn.disabled = true;
+    fetchBtn.textContent = "Cer lista…";
+    fetchModelIds(id).then(function(ids){
+      state.settings.modelLists[id] = ids;
+      saveSettings();
+      toast(PROVIDER_META[id].label + ": " + ids.length + " modele încărcate.", "success");
+    }).catch(function(err){
+      toast(PROVIDER_META[id].label + ": " + ((err && err.message) || "nu s-a putut obține lista"), "error");
+    }).finally(function(){
+      renderSettings();
+      const conv = getCurrentConversation();
+      renderModelDatalist(conv ? conv.provider : "anthropic");
+    });
+    return;
+  }
+  if (e.target.id === "btn-wipe-all"){
+    if (!confirm("Ștergi DEFINITIV toate cheile API, conversațiile, agenții și setările din acest browser?")) return;
+    if (activeAbortController) activeAbortController.abort();
+    Store.wipe();
+    location.reload();
+    return;
+  }
+  const delPersona = e.target.closest("[data-del-persona]");
+  if (delPersona){
+    const id = delPersona.dataset.delPersona;
+    state.settings.personas = state.settings.personas.filter(function(p){ return p.id !== id; });
+    saveSettings();
+    renderSettings();
+    renderTopbar();
+    return;
+  }
+  if (e.target.id === "btn-add-persona"){
+    const name = $("#np-name").value.trim();
+    const prompt = $("#np-prompt").value.trim();
+    const provider = $("#np-provider").value;
+    const model = $("#np-model").value.trim() || (state.settings.providers[provider].defaultModel) || "";
+    if (!name || !prompt){ toast("Completează numele și promptul de sistem.", "error"); return; }
+    state.settings.personas.push({ id:"custom-" + uid(), builtIn:false, icon:"✦", name:name, systemPrompt:prompt, provider:provider, model:model });
+    saveSettings();
+    renderSettings();
+    renderTopbar();
+    toast("Agent adăugat.", "success");
+    return;
+  }
+});
+
+let lastFocus = null;
+function openSettings(focusProvider){
+  lastFocus = document.activeElement;
+  renderSettings();
+  $("#overlay").classList.remove("hidden");
+  $("#settings-modal").classList.remove("hidden");
+  $("#app").setAttribute("inert", "");
+  $("#btn-close-settings").focus();
+  if (focusProvider){
+    const el = document.querySelector('[data-provider="' + focusProvider + '"]');
+    if (el) setTimeout(function(){ if (typeof el.scrollIntoView === "function") el.scrollIntoView({ block:"start" }); }, 30);
+  }
+}
+function closeSettings(){
+  if ($("#settings-modal").classList.contains("hidden")) return;
+  $("#overlay").classList.add("hidden");
+  $("#settings-modal").classList.add("hidden");
+  $("#app").removeAttribute("inert");
+  if (lastFocus && typeof lastFocus.focus === "function" && document.contains(lastFocus)) lastFocus.focus();
+  lastFocus = null;
+}
+function trapFocus(e){
+  if (e.key !== "Tab" || $("#settings-modal").classList.contains("hidden")) return;
+  const f = $$('button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), summary, [href]', $("#settings-modal"))
+    .filter(function(el){ return el.offsetParent !== null; });
+  if (!f.length) return;
+  const first = f[0], last = f[f.length - 1];
+  if (e.shiftKey && (document.activeElement === first || !$("#settings-modal").contains(document.activeElement))){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+}
+
+/* ============================================================
+   CONVERSAȚII — creare, comutare, ștergere
+   ============================================================ */
+function createConversation(personaId){
+  const persona = findPersona(personaId || "general");
+  const conv = {
+    id: uid(), title:"", createdAt: nowISO(), updatedAt: nowISO(),
+    personaId: persona.id, provider: persona.provider, model: persona.model,
+    systemPromptOverride:"", messages: []
+  };
+  state.conversations.push(conv);
+  state.currentConvId = conv.id;
+  saveConversations(); saveCurrentConvId();
+  renderConversationList(); renderTopbar(); renderMessages();
+  setTimeout(function(){ $("#input-text").focus(); }, 10);
+}
+function switchConversation(id){
+  if (activeAbortController) activeAbortController.abort();
+  state.currentConvId = id;
+  saveCurrentConvId();
+  renderConversationList(); renderTopbar(); renderMessages();
+  closeMobileSidebar();
+}
+function deleteConversation(id){
+  if (!confirm("Ștergi definitiv această conversație?")) return;
+  if (id === state.currentConvId && activeAbortController) activeAbortController.abort();
+  state.conversations = state.conversations.filter(function(c){ return c.id !== id; });
+  if (state.currentConvId === id){
+    state.currentConvId = state.conversations.length ? state.conversations[0].id : null;
+  }
+  saveConversations(); saveCurrentConvId();
+  renderConversationList(); renderTopbar(); renderMessages();
+}
+
+/* ============================================================
+   TRIMITERE MESAJ
+   ============================================================ */
+let activeAbortController = null;
+function setSending(sending){
+  $("#btn-send").classList.toggle("hidden", sending);
+  $("#btn-stop").classList.toggle("hidden", !sending);
+  $("#input-text").disabled = sending;
+  if (!sending && getCurrentConversation()) setTimeout(function(){ $("#input-text").focus(); }, 0);
+}
+
+/* Istoric trimis la API: fără mesaje de eroare/goale/în curs; ultimele N mesaje în limita de caractere;
+   începe cu „user"; mesajele consecutive de același rol sunt unite (unele API-uri cer alternanță). */
+function buildHistory(conv, excludeMsg){
+  const usable = conv.messages.filter(function(m){
+    return m !== excludeMsg && !m.pending && !m.error && (m.role === "user" || m.role === "assistant") &&
+      typeof m.content === "string" && m.content.trim();
+  });
+  const keep = [];
+  let total = 0;
+  for (let i = usable.length - 1; i >= 0; i--){
+    const len = usable[i].content.length;
+    if (keep.length >= MAX_HISTORY_MESSAGES || (keep.length > 0 && total + len > MAX_HISTORY_CHARS)) break;
+    keep.unshift(usable[i]);
+    total += len;
+  }
+  while (keep.length && keep[0].role !== "user") keep.shift();
+  const merged = [];
+  keep.forEach(function(m){
+    const last = merged[merged.length - 1];
+    if (last && last.role === m.role) last.content += "\n\n" + m.content;
+    else merged.push({ role:m.role, content:m.content });
+  });
+  return { messages: merged, trimmed: keep.length < usable.length };
+}
+
+async function sendCurrentMessage(userText){
+  const conv = getCurrentConversation();
+  if (!conv) return;
+  if (activeAbortController) return; // o cerere e deja în curs
+  const persona = findPersona(conv.personaId);
+  const providerId = conv.provider || persona.provider;
+  const providerCfg = state.settings.providers[providerId] || {};
+  const model = (conv.model || "").trim() || providerCfg.defaultModel || persona.model;
+
+  const missingKey = providerId !== "custom" && !providerCfg.apiKey;
+  if (missingKey){
+    toast("Adaugă o cheie API pentru " + PROVIDER_META[providerId].label + " din Setări.", "error");
+    openSettings(providerId);
+    return;
+  }
+  if (providerId === "custom" && !normalizeBaseUrl(providerCfg.baseUrl)){
+    toast("Completează URL-ul endpoint-ului personalizat în Setări.", "error");
+    openSettings(providerId);
+    return;
+  }
+  if (!model){
+    toast("Completează un model pentru " + PROVIDER_META[providerId].label + ".", "error");
+    return;
+  }
+
+  const userMsg = { id: uid(), role:"user", content:userText, createdAt: nowISO() };
+  conv.messages.push(userMsg);
+  if (conv.messages.length === 1) conv.title = deriveTitle(userText);
+  conv.updatedAt = nowISO();
+  saveConversations();
+  renderConversationList(); $("#conv-title").value = conv.title;
+
+  const assistantMsg = { id: uid(), role:"assistant", content:"", createdAt: nowISO(), provider:providerId, model:model, pending:true };
+  conv.messages.push(assistantMsg);
+  renderMessages();
+
+  setSending(true);
+  const ctl = new AbortController();
+  activeAbortController = ctl;
+  /* watchdog: dacă nu vine nimic de la furnizor IDLE_TIMEOUT_MS, cererea e întreruptă */
+  let timedOut = false, timer = null;
+  const touch = function(){
+    clearTimeout(timer);
+    timer = setTimeout(function(){ timedOut = true; ctl.abort(); }, IDLE_TIMEOUT_MS);
+  };
+  touch();
+  const systemPrompt = (conv.systemPromptOverride || persona.systemPrompt || "").trim();
+  const hist = buildHistory(conv, assistantMsg);
+  if (hist.trimmed) toast("Conversație lungă: se trimit doar ultimele mesaje (max " + MAX_HISTORY_MESSAGES + " / ~" + Math.round(MAX_HISTORY_CHARS/1000) + "k caractere).", "info");
+
+  try {
+    await dispatchProvider(providerId, {
+      apiKey: providerCfg.apiKey, baseUrl: providerCfg.baseUrl, model: model,
+      system: systemPrompt, messages: hist.messages, signal: ctl.signal, touch: touch,
+      onDelta: function(chunk){ assistantMsg.content += chunk; updateMessageBubble(assistantMsg); }
+    });
+    announce("Răspuns primit de la " + PROVIDER_META[providerId].label + ".");
+  } catch(err){
+    if (err && err.name === "AbortError" && !timedOut){
+      assistantMsg.content += (assistantMsg.content ? "\n\n" : "") + "*(oprit)*";
+      announce("Generare oprită.");
+    } else {
+      assistantMsg.error = true;
+      const msg = timedOut ? "Fără răspuns de la furnizor timp de " + Math.round(IDLE_TIMEOUT_MS/60000) + " minute; cererea a fost întreruptă." : explainError(err, providerId);
+      if (!assistantMsg.content) assistantMsg.content = "⚠ " + msg;
+      else assistantMsg.content += "\n\n⚠ " + msg;
+      toast(msg, "error");
+      announce("Eroare: " + msg);
+    }
+  } finally {
+    clearTimeout(timer);
+    assistantMsg.pending = false;
+    setSending(false);
+    activeAbortController = null;
+    conv.updatedAt = nowISO();
+    saveConversations();
+    renderConversationList();
+    updateMessageBubble(assistantMsg, true);
+  }
+}
+
+/* ============================================================
+   EXPORT / IMPORT
+   ============================================================ */
+function exportData(){
+  try {
+    const payload = {
+      exportedAt: nowISO(),
+      app: "nexus-fara-frontiere",
+      version: 1,
+      conversations: state.conversations,
+      personas: state.settings.personas
+      /* cheile API nu se exportă niciodată */
+    };
+    let json = JSON.stringify(payload, null, 2);
+    /* plasă de siguranță: dacă o cheie salvată apare totuși în text (ex. lipită în chat), se maschează */
+    let redacted = 0;
+    PROVIDER_ORDER.forEach(function(id){
+      const k = (state.settings.providers[id] || {}).apiKey;
+      if (k && k.length >= 8 && json.indexOf(k) !== -1){ redacted++; json = json.split(k).join("[CHEIE-ELIMINATĂ]"); }
+    });
+    const blob = new Blob([json], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "nexus-export-" + new Date().toISOString().slice(0,10) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    toast("Export salvat (fără chei API)." + (redacted ? " Atenție: o cheie apărea în text și a fost eliminată." : ""), redacted ? "info" : "success");
+  } catch(e){
+    toast("Exportul a eșuat: " + (e && e.message ? e.message : "eroare necunoscută"), "error");
+  }
+}
+function importData(file){
+  if (file.size > 20 * 1024 * 1024){ toast("Fișier prea mare (max 20 MB).", "error"); return; }
+  const reader = new FileReader();
+  reader.onerror = function(){ toast("Fișierul nu a putut fi citit.", "error"); };
+  reader.onload = function(){
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || !Array.isArray(data.conversations)) throw new Error("format necunoscut");
+      /* tot ce vine din fișier e sanitizat (ID-uri, roluri, furnizori, lungimi); nu se importă chei, URL-uri sau „pending" */
+      const have = {};
+      state.conversations.forEach(function(c){ have[c.id] = true; });
+      let added = 0;
+      data.conversations.slice(0, 1000).forEach(function(raw){
+        const c = cleanConversation(raw);
+        if (!c) return;
+        if (have[c.id]) c.id = uid();
+        have[c.id] = true;
+        state.conversations.push(c);
+        added++;
+      });
+      let addedP = 0;
+      if (Array.isArray(data.personas)){
+        const existingIds = BUILTIN_IDS.concat(state.settings.personas.map(function(p){ return p.id; }));
+        data.personas.slice(0, 100).forEach(function(raw){
+          const p = cleanPersona(raw);
+          if (p && existingIds.indexOf(p.id) === -1){ state.settings.personas.push(p); existingIds.push(p.id); addedP++; }
+        });
+      }
+      if (!state.currentConvId && state.conversations.length) state.currentConvId = state.conversations[0].id;
+      saveConversations(); saveSettings(); saveCurrentConvId();
+      renderConversationList(); renderTopbar(); renderMessages();
+      toast("Import reușit: " + added + " conversații, " + addedP + " agenți.", "success");
+    } catch(e){
+      toast("Fișier de import invalid.", "error");
+    }
+  };
+  reader.readAsText(file);
+}
+
+/* ============================================================
+   SIDEBAR MOBIL
+   ============================================================ */
+function openMobileSidebar(){ $("#sidebar").classList.add("open"); $("#overlay").classList.remove("hidden"); }
+function closeMobileSidebar(){
+  $("#sidebar").classList.remove("open");
+  if ($("#settings-modal").classList.contains("hidden")) $("#overlay").classList.add("hidden");
+}
+
+/* ============================================================
+   LEGARE EVENIMENTE
+   ============================================================ */
+$("#btn-new-conv").addEventListener("click", function(){ createConversation("general"); });
+$("#btn-empty-new").addEventListener("click", function(){ createConversation("general"); });
+
+$("#conv-list").addEventListener("click", function(e){
+  const delBtn = e.target.closest("[data-del-id]");
+  if (delBtn){ e.stopPropagation(); deleteConversation(delBtn.dataset.delId); return; }
+  const item = e.target.closest("[data-conv-id]");
+  if (item) switchConversation(item.dataset.convId);
+});
+
+$("#composer").addEventListener("submit", function(e){
+  e.preventDefault();
+  const ta = $("#input-text");
+  const text = ta.value.trim();
+  if (!text || ta.disabled) return;
+  ta.value = "";
+  autoGrow(ta);
+  sendCurrentMessage(text);
+});
+$("#input-text").addEventListener("keydown", function(e){
+  if (e.key === "Enter" && !e.shiftKey){
+    e.preventDefault();
+    if (typeof $("#composer").requestSubmit === "function") $("#composer").requestSubmit();
+    else $("#composer").dispatchEvent(new Event("submit", { cancelable:true }));
+  }
+});
+$("#input-text").addEventListener("input", function(){ autoGrow(this); });
+$("#btn-stop").addEventListener("click", function(){ if (activeAbortController) activeAbortController.abort(); });
+
+$("#conv-title").addEventListener("input", function(){
+  const conv = getCurrentConversation();
+  if (conv) conv.title = this.value;
+});
+$("#conv-title").addEventListener("change", function(){
+  const conv = getCurrentConversation();
+  if (!conv) return;
+  saveConversations();
+  renderConversationList();
+});
+
+$("#persona-select").addEventListener("change", function(){
+  const conv = getCurrentConversation();
+  if (!conv) return;
+  const persona = findPersona(this.value);
+  conv.personaId = persona.id;
+  conv.provider = persona.provider;
+  conv.model = persona.model;
+  conv.updatedAt = nowISO();
+  saveConversations();
+  renderTopbar();
+  renderConversationList();
+});
+$("#provider-select").addEventListener("change", function(){
+  const conv = getCurrentConversation();
+  if (!conv) return;
+  conv.provider = this.value;
+  conv.model = (state.settings.providers[this.value] || {}).defaultModel || "";
+  saveConversations();
+  renderTopbar();
+  renderConversationList();
+});
+$("#model-input").addEventListener("change", function(){
+  const conv = getCurrentConversation();
+  if (!conv) return;
+  conv.model = this.value.trim();
+  saveConversations();
+});
+
+$("#btn-settings").addEventListener("click", function(){ openSettings(); });
+$("#btn-close-settings").addEventListener("click", closeSettings);
+$("#overlay").addEventListener("click", function(){ closeSettings(); closeMobileSidebar(); });
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape"){ closeSettings(); closeMobileSidebar(); }
+});
+
+$("#btn-export").addEventListener("click", exportData);
+$("#btn-import").addEventListener("click", function(){ $("#import-file").click(); });
+$("#import-file").addEventListener("change", function(){
+  if (this.files && this.files[0]) importData(this.files[0]);
+  this.value = "";
+});
+
+/* buton „Copiază" din blocurile de cod */
+$("#messages-inner").addEventListener("click", function(e){
+  const btn = e.target.closest(".btn-copy-code");
+  if (!btn) return;
+  const code = btn.closest(".code-block").querySelector("pre code");
+  const text = code ? code.textContent : "";
+  function done(ok){
+    btn.textContent = ok ? "Copiat" : "Nu s-a putut";
+    setTimeout(function(){ btn.textContent = "Copiază"; }, 1500);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ done(false); });
+  } else {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove(); done(ok);
+    } catch(err){ done(false); }
+  }
+});
+$("#link-privacy").addEventListener("click", function(e){
+  e.preventDefault();
+  openSettings();
+  const w = document.getElementById("privacy-warning");
+  if (w && typeof w.scrollIntoView === "function") w.scrollIntoView({ block:"start" });
+});
+document.addEventListener("keydown", trapFocus);
+
+$("#btn-open-sidebar").addEventListener("click", openMobileSidebar);
+$("#btn-close-sidebar").addEventListener("click", closeMobileSidebar);
+
+/* ============================================================
+   PORNIRE
+   ============================================================ */
+function init(){
+  loadState();
+  if (!state.currentConvId && state.conversations.length){
+    const sorted = state.conversations.slice().sort(function(a,b){ return new Date(b.updatedAt) - new Date(a.updatedAt); });
+    state.currentConvId = sorted[0].id;
+  }
+  if (state.currentConvId && !getCurrentConversation()) state.currentConvId = state.conversations.length ? state.conversations[0].id : null;
+  renderConversationList();
+  renderPatchPanel();
+  renderTopbar();
+  renderMessages();
+}
+init();
+
+})();
+</script>
+</body>
+</html>
