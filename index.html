@@ -100,11 +100,11 @@ a{color:var(--line-google)}
   border:1px solid var(--brand-soft);border-radius:8px;
   background:radial-gradient(circle at 30% 20%, rgba(232,163,61,.18), transparent 70%);
 }
-.brand-text h1{
+.brand-text .brand-name{
   margin:0;font-size:14.5px;font-weight:600;letter-spacing:.2px;color:var(--text);
   font-family:var(--mono);
 }
-.brand-text h1 span{color:var(--text-mute);font-weight:500}
+.brand-text .brand-name span{color:var(--text-mute);font-weight:500}
 .brand-text .tagline{margin:1px 0 0;font-size:11px;color:var(--text-mute)}
 
 .btn-new-conv{
@@ -414,7 +414,7 @@ a{color:var(--line-google)}
       <div class="brand">
         <span class="brand-mark">◆</span>
         <div class="brand-text">
-          <h1>Nexus <span>fără frontiere</span></h1>
+          <p class="brand-name">Nexus <span>fără frontiere</span></p>
           <p class="tagline">Hub personal de agenți AI</p>
         </div>
       </div>
@@ -439,6 +439,7 @@ a{color:var(--line-google)}
   </aside>
 
   <main class="main">
+    <h1 class="sr-only">Nexus fără frontiere</h1>
     <header class="topbar">
       <button class="icon-btn mobile-only" id="btn-open-sidebar" aria-label="Deschide meniul">☰</button>
       <input class="conv-title-input" id="conv-title" placeholder="Conversație nouă" maxlength="80" aria-label="Titlul conversației">

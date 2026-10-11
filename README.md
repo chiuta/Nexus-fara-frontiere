@@ -4,6 +4,8 @@ Hub personal de chat AI într-un singur fișier HTML: vorbești direct din brows
 
 **Live:** https://chiuta.github.io/Nexus-fara-frontiere/
 
+Ultima actualizare: 11 octombrie 2026
+
 ![Captură de ecran (conversație demonstrativă)](screenshot.png)
 
 ## Ce este
@@ -78,6 +80,12 @@ Pentru Ollama: pornește-l cu variabila `OLLAMA_ORIGINS` setată la originea pag
 ## Rulare locală / offline
 
 Descarcă `index.html` și deschide-l în browser. Pagina pornește fără internet, dar chat-ul cere rețea (sau un model local, ex. Ollama pe `localhost`).
+
+## Istoric / Changelog
+
+### 11.10.2026 — 11 octombrie 2026
+- Accesibilitate: un singur titlu h1 în zona principală (cel din bara laterală era ascuns pe mobil); verificare axe fără încălcări la 1280 și 360 px.
+- Sugestiile de modele rămân cele verificate la 2026-10-08 (data apare în aplicație); nu au fost reverificate pe 11.10.2026 — verifică lista în Setări sau cu „Actualizează lista de modele”.
 
 ## Licență
 
