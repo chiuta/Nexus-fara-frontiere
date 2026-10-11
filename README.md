@@ -26,6 +26,7 @@ Verificate în cod și, unde scrie „test”, într-un browser headless (Chromi
 - Export/import JSON (conversații și agenți, **fără chei**), cu sanitizarea fișierului importat.
 - Lista de modele editabilă și reîncărcabilă din API-ul furnizorului, cu cheia ta.
 - „Șterge cheia” per furnizor și „Șterge toate datele locale”.
+- Ghidare la prima utilizare: starea goală indică lipsa cheii API și deschide Setările dintr-un buton; textul tastat nu se pierde dacă lipsește cheia.
 - Mesaje de eroare explicite pentru 401, 403, 404, 429 (cu `Retry-After` dacă furnizorul îl expune), 5xx, erori în mijlocul stream-ului și rețea/CORS/CSP (test).
 
 ## Manual de utilizare
@@ -83,6 +84,10 @@ Pentru Ollama: pornește-l cu variabila `OLLAMA_ORIGINS` setată la originea pag
 Descarcă `index.html` și deschide-l în browser. Pagina pornește fără internet, dar chat-ul cere rețea (sau un model local, ex. Ollama pe `localhost`).
 
 ## Istoric / Changelog
+
+### 11.10.2026 (a treia actualizare) — 11 octombrie 2026
+- Corectat: dacă trimiteai primul mesaj fără cheie API (sau fără endpoint/model), textul tastat se pierdea; acum rămâne în câmpul de scris, iar notificarea spune asta.
+- Starea goală arată un pas de pornire cu buton „Deschide Setări” cât timp niciun furnizor nu are cheie (sau endpoint) salvată; dispare după ce adaugi una.
 
 ### 11.10.2026 (a doua actualizare) — 11 octombrie 2026
 - Căutare în conversații (titlu și text), export al conversației curente în Markdown și stil de tipărire pentru conversație.

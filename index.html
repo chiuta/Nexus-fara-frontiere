@@ -11,7 +11,7 @@
 <meta property="og:title" content="Nexus fără frontiere — hub de agenți AI">
 <meta property="og:description" content="Chat cu Anthropic, OpenAI, Google sau un endpoint personalizat, direct din browser, într-un singur fișier HTML.">
 <meta property="og:type" content="website">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-jQIFET5t8A5TGIeapx6KSHHsJIBDrnzkqStm3Y8e7J8='; style-src 'unsafe-inline'; img-src data:; connect-src https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*; base-uri 'none'; form-action 'none'; frame-src 'none'; object-src 'none'; worker-src 'none'; manifest-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Vs6GLUdgz4TAd1KmxmzZw4eHfUMv19I+DmTJKF5zwP0='; style-src 'unsafe-inline'; img-src data:; connect-src https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*; base-uri 'none'; form-action 'none'; frame-src 'none'; object-src 'none'; worker-src 'none'; manifest-src 'none'">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230E1017'/%3E%3Cpath d='M16 6l8 10-8 10-8-10z' fill='%23E8A33D'/%3E%3C/svg%3E">
 <style>
 /* ============================================================
@@ -284,6 +284,7 @@ a{color:var(--line-google)}
 .empty-state h2{margin:0;color:var(--text-dim);font-size:16px;font-weight:600}
 .empty-state p{margin:0;font-size:13px;max-width:360px}
 .empty-state .btn-primary{margin-top:10px}
+.empty-state .empty-setup{margin-top:6px;padding:10px 12px;border:1px dashed var(--border,#2a2d3a);border-radius:10px;color:var(--text-dim);display:flex;flex-direction:column;align-items:center;gap:8px}
 
 .btn-primary{
   background:var(--brand);color:#241705;border:0;font-weight:700;
@@ -475,6 +476,7 @@ a{color:var(--line-google)}
       <h2>Nicio linie deschisă</h2>
       <p>Pornește o conversație nouă și alege un agent — Cod, Cowork sau General — apoi conectează-l la furnizorul tău preferat.</p>
       <button class="btn-primary" id="btn-empty-new">+ Conversație nouă</button>
+      <p class="empty-setup hidden" id="empty-setup"><span><strong>Primul pas:</strong> nu ai încă nicio cheie API (sau endpoint) salvată. Fără ea, mesajele nu pot fi trimise.</span><button type="button" class="btn-ghost" id="btn-empty-settings">⚙ Deschide Setări</button></p>
     </div>
 
     <form class="composer" id="composer">
@@ -1108,6 +1110,13 @@ function renderPatchPanel(){
       '"></span><span class="name">' + meta.label + '</span><span class="led ' + ledClass + '"></span></div>';
   }).join("");
   $("#patch-rows").innerHTML = rows;
+  updateEmptyState();
+}
+function anyProviderReady(){
+  return PROVIDER_ORDER.some(function(id){
+    const cfg = (state.settings.providers || {})[id] || {};
+    return id === "custom" ? !!normalizeBaseUrl(cfg.baseUrl) : !!cfg.apiKey;
+  });
 }
 
 /* ============================================================
@@ -1241,6 +1250,7 @@ function scrollMessagesToBottom(force){
 function updateEmptyState(){
   const conv = getCurrentConversation();
   $("#empty-state").classList.toggle("hidden", !!conv);
+  const setup = $("#empty-setup"); if (setup) setup.classList.toggle("hidden", anyProviderReady());
   $("#messages").classList.toggle("hidden", !conv);
   $("#composer").classList.toggle("hidden", !conv);
 }
@@ -1545,10 +1555,15 @@ function buildHistory(conv, excludeMsg){
   return { messages: merged, trimmed: keep.length < usable.length };
 }
 
+/* Dacă mesajul nu poate fi trimis (cheie lipsă, endpoint/model necompletat), textul tastat se pune înapoi în câmp, ca să nu se piardă. */
+function restoreDraft(userText){
+  const ta = $("#input-text");
+  if (ta && !ta.value) { ta.value = userText; if (typeof autoGrow === "function") autoGrow(ta); }
+}
 async function sendCurrentMessage(userText){
   const conv = getCurrentConversation();
-  if (!conv) return;
-  if (activeAbortController) return; // o cerere e deja în curs
+  if (!conv) { restoreDraft(userText); return; }
+  if (activeAbortController) { restoreDraft(userText); return; } // o cerere e deja în curs
   const persona = findPersona(conv.personaId);
   const providerId = conv.provider || persona.provider;
   const providerCfg = state.settings.providers[providerId] || {};
@@ -1556,16 +1571,19 @@ async function sendCurrentMessage(userText){
 
   const missingKey = providerId !== "custom" && !providerCfg.apiKey;
   if (missingKey){
-    toast("Adaugă o cheie API pentru " + PROVIDER_META[providerId].label + " din Setări.", "error");
+    restoreDraft(userText);
+    toast("Adaugă o cheie API pentru " + PROVIDER_META[providerId].label + " din Setări. Mesajul tău a rămas în câmpul de scris.", "error");
     openSettings(providerId);
     return;
   }
   if (providerId === "custom" && !normalizeBaseUrl(providerCfg.baseUrl)){
-    toast("Completează URL-ul endpoint-ului personalizat în Setări.", "error");
+    restoreDraft(userText);
+    toast("Completează URL-ul endpoint-ului personalizat în Setări. Mesajul tău a rămas în câmpul de scris.", "error");
     openSettings(providerId);
     return;
   }
   if (!model){
+    restoreDraft(userText);
     toast("Completează un model pentru " + PROVIDER_META[providerId].label + ".", "error");
     return;
   }
@@ -1735,6 +1753,7 @@ function closeMobileSidebar(){
    ============================================================ */
 $("#btn-new-conv").addEventListener("click", function(){ createConversation("general"); });
 $("#btn-empty-new").addEventListener("click", function(){ createConversation("general"); });
+$("#btn-empty-settings").addEventListener("click", function(){ openSettings(); });
 
 $("#conv-list").addEventListener("click", function(e){
   const delBtn = e.target.closest("[data-del-id]");
