@@ -21,7 +21,8 @@ Verificate în cod și, unde scrie „test”, într-un browser headless (Chromi
 - Buton „Oprește” (anulează cererea; textul parțial rămâne, marcat „oprit”) și întrerupere automată după 5 minute fără niciun răspuns.
 - Agenți (persona): General, Cod, Cowork, Cercetare + agenți proprii (nume, prompt de sistem, furnizor, model). **„Cod” și „Cowork” sunt doar persona**: prompturi de sistem peste modelele publice din API, nu integrări cu produsele Codex sau Claude Cowork.
 - Markdown propriu, minimal: titluri, liste, bold/italic, cod inline și blocuri de cod (cu „Copiază”), linkuri `http(s)`. Fără tabele, fără imagini. Orice HTML din răspunsuri este afișat ca text; imaginile `![](…)` nu se încarcă, deci un răspuns nu poate declanșa cereri către terți (test cu payload-uri: `<img onerror>`, `javascript:`, HTML brut, `<script>`, `<svg onload>`, `<iframe>`).
-- Conversații multiple în `localStorage`, titlu editabil, ștergere.
+- Conversații multiple în `localStorage`, titlu editabil, ștergere; căutare în bara laterală după titlu și text (insensibilă la diacritice și majuscule).
+- „⇩ MD” salvează conversația curentă ca fișier Markdown (fără chei; o cheie apărută în text e mascată); tipărirea (Ctrl+P) produce doar conversația curentă, pe fundal alb.
 - Export/import JSON (conversații și agenți, **fără chei**), cu sanitizarea fișierului importat.
 - Lista de modele editabilă și reîncărcabilă din API-ul furnizorului, cu cheia ta.
 - „Șterge cheia” per furnizor și „Șterge toate datele locale”.
@@ -82,6 +83,9 @@ Pentru Ollama: pornește-l cu variabila `OLLAMA_ORIGINS` setată la originea pag
 Descarcă `index.html` și deschide-l în browser. Pagina pornește fără internet, dar chat-ul cere rețea (sau un model local, ex. Ollama pe `localhost`).
 
 ## Istoric / Changelog
+
+### 11.10.2026 (a doua actualizare) — 11 octombrie 2026
+- Căutare în conversații (titlu și text), export al conversației curente în Markdown și stil de tipărire pentru conversație.
 
 ### 11.10.2026 — 11 octombrie 2026
 - Accesibilitate: un singur titlu h1 în zona principală (cel din bara laterală era ascuns pe mobil); verificare axe fără încălcări la 1280 și 360 px.
