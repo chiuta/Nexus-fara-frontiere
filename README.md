@@ -1,6 +1,6 @@
 # Nexus fără frontiere
 
-**Versiune:** 1.0.0 · **Ultima actualizare:** 12 octombrie 2026
+**Versiune:** 1.1.0 · **Ultima actualizare:** 14 octombrie 2026
 
 Hub personal de chat AI într-un singur fișier HTML: vorbești direct din browser cu Anthropic, OpenAI, Google sau cu un endpoint compatibil OpenAI. **Nu este o aplicație offline** și cheile tale stau în browser, necriptate — citește secțiunea „Confidențialitate și rețea”.
 
@@ -84,6 +84,9 @@ Pentru Ollama: pornește-l cu variabila `OLLAMA_ORIGINS` setată la originea pag
 Descarcă `index.html` și deschide-l în browser. Pagina pornește fără internet, dar chat-ul cere rețea (sau un model local, ex. Ollama pe `localhost`).
 
 ## Istoric / Changelog
+
+### 1.1.0 — 2026-10-14
+- Copie de rezervă și etichetare date (fff-kit).
 
 ### 1.0.0 — 12 octombrie 2026
 - Versiunea și data ultimei actualizări sunt afișate în aplicație (sub câmpul de mesaj).

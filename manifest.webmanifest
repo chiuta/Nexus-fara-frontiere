@@ -1,0 +1,36 @@
+{
+  "name": "Nexus fără frontiere",
+  "short_name": "Nexus",
+  "description": "Hub personal de chat AI într-un singur fișier HTML: te conectezi direct, din browser, la API-urile Anthropic, OpenAI, Google sau la un endpoint compatibil OpenAI. Fără server propriu, fără telemetrie; cheile rămân în browserul tău.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "lang": "ro",
+  "background_color": "#0e1017",
+  "theme_color": "#0e1017",
+  "categories": [
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "x_fff_pwa": 1
+}

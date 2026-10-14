@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "slug": "nexus-fara-frontiere",
+  "name": "Nexus fără frontiere — hub de agenți AI",
+  "version": "1.1.0",
+  "updated": "2026-10-14",
+  "description": "Hub personal de chat AI într-un singur fișier HTML: te conectezi direct, din browser, la API-urile Anthropic, OpenAI, Google sau la un endpoint compatibil OpenAI. Fără server propriu, fără telemetrie; cheile rămân în browserul tău.",
+  "egress": [
+    {
+      "host": "127.0.0.1",
+      "via": [
+        "csp:connect-src"
+      ]
+    },
+    {
+      "host": "api.anthropic.com",
+      "via": [
+        "csp:connect-src",
+        "fetch"
+      ]
+    },
+    {
+      "host": "api.openai.com",
+      "via": [
+        "csp:connect-src"
+      ]
+    },
+    {
+      "host": "generativelanguage.googleapis.com",
+      "via": [
+        "csp:connect-src",
+        "fetch"
+      ]
+    },
+    {
+      "host": "localhost",
+      "via": [
+        "csp:connect-src"
+      ]
+    }
+  ],
+  "permissions": [
+    "clipboard",
+    "serviceWorker",
+    "localStorage"
+  ],
+  "storageKeys": [],
+  "sizeBytes": 183407,
+  "sha256": "3d08b96af363dcb7542f7b7e09043e79e64c4661b14688990bfce7162879ba2d",
+  "csp": {
+    "present": true,
+    "directives": {
+      "default-src": "'none'",
+      "script-src": "sha256×3",
+      "style-src": "'unsafe-inline'",
+      "img-src": "'self' data:",
+      "connect-src": "https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*",
+      "base-uri": "'none'",
+      "form-action": "'none'",
+      "frame-src": "'none'",
+      "object-src": "'none'",
+      "worker-src": "'self'",
+      "manifest-src": "'self'"
+    },
+    "scriptInline": "hash",
+    "connect": "https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*"
+  },
+  "features": {
+    "export": true,
+    "import": true,
+    "i18n": [],
+    "pwa": {
+      "manifest": true,
+      "serviceWorker": true
+    },
+    "modules": [
+      "core",
+      "label",
+      "bundle"
+    ]
+  },
+  "kit": {
+    "version": "1.0.0",
+    "modules": [
+      "core",
+      "label",
+      "bundle"
+    ]
+  },
+  "selfSerializing": false
+}
