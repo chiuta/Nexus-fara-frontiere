@@ -104,7 +104,7 @@ Descarcă `index.html` și deschide-l în browser. Pagina pornește fără inter
 
 ## Licență
 
-Licența nu este încă declarată în acest repository; autorul va stabili licența.
+MIT — vezi fișierul LICENSE.
 
 ## Autor
 
