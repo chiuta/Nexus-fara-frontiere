@@ -2,7 +2,9 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.1.0 · **Ultima actualizare:** 2026-10-14
+**Versiune:** 1.2.0 · **Ultima actualizare:** 2026-10-19
+
+Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
 Hub personal de chat AI într-un singur fișier HTML: vorbești direct din browser cu Anthropic, OpenAI, Google sau cu un endpoint compatibil OpenAI. **Nu este o aplicație offline** și cheile tale stau în browser, necriptate — citește secțiunea „Confidențialitate și rețea”.
 

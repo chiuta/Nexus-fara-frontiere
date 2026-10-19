@@ -2,7 +2,9 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.1.0 · **Última atualização:** 2026-10-14
+**Versão:** 1.2.0 · **Última atualização:** 2026-10-19
+
+Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
 Centro pessoal de chat com IA num único ficheiro HTML: fala diretamente a partir do navegador com a Anthropic, a OpenAI, a Google ou com um endpoint compatível com a OpenAI. **Não é uma aplicação offline** e as suas chaves ficam no navegador, sem cifragem — leia a secção «Privacidade e rede».
 

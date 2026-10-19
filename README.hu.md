@@ -2,7 +2,9 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.1.0 · **Utolsó frissítés:** 2026-10-14
+**Verzió:** 1.2.0 · **Utolsó frissítés:** 2026-10-19
+
+A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
 Személyes MI-csevegőközpont egyetlen HTML-fájlban: közvetlenül a böngészőből beszélgetsz az Anthropickal, az OpenAI-jal, a Google-lel vagy egy OpenAI-kompatibilis végponttal. **Nem offline alkalmazás**, és a kulcsaid titkosítatlanul a böngészőben vannak — olvasd el az „Adatvédelem és hálózat” szakaszt.
 
