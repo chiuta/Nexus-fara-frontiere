@@ -1,115 +1,117 @@
 # Nexus fără frontiere
 
-**Versiune:** 1.1.0 · **Ultima actualizare:** 14 octombrie 2026
+**English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-Hub personal de chat AI într-un singur fișier HTML: vorbești direct din browser cu Anthropic, OpenAI, Google sau cu un endpoint compatibil OpenAI. **Nu este o aplicație offline** și cheile tale stau în browser, necriptate — citește secțiunea „Confidențialitate și rețea”.
+**Version:** 1.1.0 · **Last updated:** 2026-10-14
 
-**Live:** https://chiuta.github.io/Nexus-fara-frontiere/
+A personal AI chat hub in a single HTML file: you talk directly from the browser to Anthropic, OpenAI, Google or an OpenAI-compatible endpoint. **It is not an offline app** and your keys sit in the browser, unencrypted — read the section "Privacy and network".
 
-![Captură de ecran (conversație demonstrativă)](screenshot.png)
+**Live app:** https://chiuta.github.io/Nexus-fara-frontiere/
 
-## Ce este
+![Screenshot (demo conversation)](screenshot.png)
 
-Un client de chat fără server propriu: pagina nu are backend, nu are conturi și nu trimite telemetrie. Tu îți introduci propriile chei API, iar cererile pleacă direct din browserul tău către furnizorul ales. Fără rețea și fără cheie nu poți vorbi cu niciun model.
+## What it is
 
-## Funcții
+A chat client without a server of its own: the page has no backend, no accounts and sends no telemetry. You enter your own API keys, and requests go straight from your browser to the chosen provider. Without a network and without a key you cannot talk to any model.
 
-Verificate în cod și, unde scrie „test”, într-un browser headless (Chromium/Playwright) cu răspunsuri **simulate** — nu am rulat apeluri reale către API-urile furnizorilor.
+## Features
 
-- Patru furnizori: Anthropic (Messages API), OpenAI (Chat Completions), Google (Gemini `generateContent`) și „Personalizat” (orice endpoint compatibil OpenAI: Ollama, LM Studio, OpenRouter etc.).
-- Streaming SSE pentru Anthropic și pentru OpenAI/compatibile (test). **Google nu face streaming**: răspunsul apare întreg, la final.
-- Buton „Oprește” (anulează cererea; textul parțial rămâne, marcat „oprit”) și întrerupere automată după 5 minute fără niciun răspuns.
-- Agenți (persona): General, Cod, Cowork, Cercetare + agenți proprii (nume, prompt de sistem, furnizor, model). **„Cod” și „Cowork” sunt doar persona**: prompturi de sistem peste modelele publice din API, nu integrări cu produsele Codex sau Claude Cowork.
-- Markdown propriu, minimal: titluri, liste, bold/italic, cod inline și blocuri de cod (cu „Copiază”), linkuri `http(s)`. Fără tabele, fără imagini. Orice HTML din răspunsuri este afișat ca text; imaginile `![](…)` nu se încarcă, deci un răspuns nu poate declanșa cereri către terți (test cu payload-uri: `<img onerror>`, `javascript:`, HTML brut, `<script>`, `<svg onload>`, `<iframe>`).
-- Conversații multiple în `localStorage`, titlu editabil, ștergere; căutare în bara laterală după titlu și text (insensibilă la diacritice și majuscule).
-- „⇩ MD” salvează conversația curentă ca fișier Markdown (fără chei; o cheie apărută în text e mascată); tipărirea (Ctrl+P) produce doar conversația curentă, pe fundal alb.
-- Export/import JSON (conversații și agenți, **fără chei**), cu sanitizarea fișierului importat.
-- Lista de modele editabilă și reîncărcabilă din API-ul furnizorului, cu cheia ta.
-- „Șterge cheia” per furnizor și „Șterge toate datele locale”.
-- Ghidare la prima utilizare: starea goală indică lipsa cheii API și deschide Setările dintr-un buton; textul tastat nu se pierde dacă lipsește cheia.
-- Mesaje de eroare explicite pentru 401, 403, 404, 429 (cu `Retry-After` dacă furnizorul îl expune), 5xx, erori în mijlocul stream-ului și rețea/CORS/CSP (test).
+Verified in the code and, where it says "test", in a headless browser (Chromium/Playwright) with **mocked** responses — I did not run real calls against the providers' APIs.
 
-## Manual de utilizare
+- Four providers: Anthropic (Messages API), OpenAI (Chat Completions), Google (Gemini `generateContent`) and "Custom" (any OpenAI-compatible endpoint: Ollama, LM Studio, OpenRouter, etc.).
+- SSE streaming for Anthropic and for OpenAI/compatible (test). **Google does not stream**: the response appears whole, at the end.
+- "Stop" button (cancels the request; the partial text stays, marked "stopped") and automatic abort after 5 minutes without any response.
+- Agents (personas): General, Code, Cowork, Research + your own agents (name, system prompt, provider, model). **"Code" and "Cowork" are only personas**: system prompts on top of the public models in the API, not integrations with the Codex or Claude Cowork products.
+- Own minimal Markdown: headings, lists, bold/italic, inline code and code blocks (with "Copy"), `http(s)` links. No tables, no images. Any HTML in responses is displayed as text; `![](…)` images do not load, so a response cannot trigger requests to third parties (tested with payloads: `<img onerror>`, `javascript:`, raw HTML, `<script>`, `<svg onload>`, `<iframe>`).
+- Multiple conversations in `localStorage`, editable title, deletion; sidebar search by title and text (diacritics- and case-insensitive).
+- "⇩ MD" saves the current conversation as a Markdown file (no keys; a key that appears in the text is masked); printing (Ctrl+P) produces only the current conversation, on a white background.
+- JSON export/import (conversations and agents, **without keys**), with sanitisation of the imported file.
+- The model list is editable and can be reloaded from the provider's API, with your key.
+- "Delete key" per provider and "Delete all local data".
+- First-use guidance: the empty state points to the missing API key and opens Settings from a button; typed text is not lost if the key is missing.
+- Explicit error messages for 401, 403, 404, 429 (with `Retry-After` if the provider exposes it), 5xx, errors in the middle of the stream and network/CORS/CSP (test).
 
-1. Deschide pagina (sau `index.html` local) și apasă **⚙ Setări**.
-2. Citește avertismentul de sus, apoi lipește cheia API pentru furnizorul dorit (butonul „arată” o dezvăluie). Folosește o cheie dedicată, cu limită de cheltuieli.
-3. Apasă **Testează conexiunea** (face o cerere minimă și o întrerupe la primul fragment de text).
-4. Dacă numele de model sugerat nu mai există, apasă **Actualizează lista de modele** sau scrie direct numele în câmpul „Model”.
-5. Închide Setările, apasă **+ Conversație nouă**, alege agentul, furnizorul și modelul din bara de sus și scrie mesajul (Enter trimite, Shift+Enter rând nou).
-6. **Oprește** întrerupe un răspuns în curs.
-7. **Export** salvează conversațiile și agenții într-un fișier JSON; **Import** le adaugă (nu înlocuiește) din fișier. Importă doar fișiere în care ai încredere: promptul unui agent importat influențează răspunsurile modelului.
+## User guide
 
-## Confidențialitate și rețea
+1. Open the page (or `index.html` locally) and press **⚙ Settings**.
+2. Read the warning at the top, then paste the API key for the provider you want (the "show" button reveals it). Use a dedicated key with a spending limit.
+3. Press **Test connection** (it makes a minimal request and aborts it at the first text fragment).
+4. If the suggested model name no longer exists, press **Update model list** or type the name directly into the "Model" field.
+5. Close Settings, press **+ New conversation**, choose the agent, provider and model from the top bar and write the message (Enter sends, Shift+Enter new line).
+6. **Stop** interrupts a response in progress.
+7. **Export** saves the conversations and agents into a JSON file; **Import** adds them (does not replace) from a file. Import only files you trust: the prompt of an imported agent influences the model's responses.
 
-**Ce rămâne în browser**
-- `localStorage`: conversațiile, agenții, setările și **cheile API, în clar (necriptate)**. Dacă `localStorage` e blocat sau plin (ex. mod privat), aplicația merge în memorie și te avertizează că nu se salvează nimic.
-- Cheile pot fi citite de oricine are acces la profilul browserului, de extensii rău intenționate sau de un eventual XSS. Măsuri luate: CSP (mai jos), tot conținutul din răspunsuri este escapat, importul e sanitizat. Nu elimină riscul: nu folosi aplicația pe calculatoare publice/partajate, folosește chei dedicate și revocă-le dacă ai dubii.
-- Exportul nu conține chei (verificat; dacă o cheie salvată apare totuși în textul unei conversații, e mascată la export). Conversațiile exportate pot conține orice ai scris tu.
+## Privacy and network
 
-**Ce pleacă din browser și unde** (doar când trimiți un mesaj, testezi conexiunea sau actualizezi lista de modele)
-- Anthropic: `https://api.anthropic.com/v1/messages` și `/v1/models`. Cheia merge în antetul `x-api-key`.
-- OpenAI: `https://api.openai.com/v1/chat/completions` și `/v1/models`. Antet `Authorization: Bearer …`.
-- Google: `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent` și `/v1beta/models`. Cheia merge în antetul `x-goog-api-key` (nu în URL).
-- Personalizat: URL-ul tău + `/v1/chat/completions` și `/v1/models`; cheia, dacă o pui, merge ca Bearer la acel URL. `http://` e acceptat doar pentru `localhost`/`127.0.0.1`.
-- La fiecare mesaj se trimit furnizorului: cheia, promptul de sistem al agentului și istoricul conversației (ultimele 100 de mesaje, maximum ~300.000 de caractere; dacă e trunchiat, aplicația te anunță). Se aplică politicile de date ale furnizorului ales.
-- Nu există alte gazde: nicio telemetrie, niciun CDN, niciun font sau script extern. Linkurile din răspunsuri se deschid doar la click (`noopener noreferrer`), iar pagina cere `referrer: no-referrer`.
+**What stays in the browser**
+- `localStorage`: conversations, agents, settings and **API keys, in clear text (unencrypted)**. If `localStorage` is blocked or full (e.g. private mode), the app runs in memory and warns you that nothing is saved.
+- Keys can be read by anyone with access to the browser profile, by malicious extensions or by a possible XSS. Measures taken: CSP (below), all content in responses is escaped, import is sanitised. They do not eliminate the risk: do not use the app on public/shared computers, use dedicated keys and revoke them if in doubt.
+- The export contains no keys (verified; if a saved key nevertheless appears in the text of a conversation, it is masked on export). Exported conversations may contain anything you wrote.
 
-**Antetul `anthropic-dangerous-direct-browser-access`**: API-ul Anthropic refuză implicit apelurile CORS din browser, tocmai pentru că o cheie într-o pagină web e riscantă. Antetul este confirmarea explicită, din partea ta, că accepți acest risc. Aplicația îl trimite pentru că altfel nu poate vorbi cu Anthropic dintr-un singur fișier HTML.
+**What leaves the browser and where** (only when you send a message, test the connection or update the model list)
+- Anthropic: `https://api.anthropic.com/v1/messages` and `/v1/models`. The key goes in the `x-api-key` header.
+- OpenAI: `https://api.openai.com/v1/chat/completions` and `/v1/models`. `Authorization: Bearer …` header.
+- Google: `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent` and `/v1beta/models`. The key goes in the `x-goog-api-key` header (not in the URL).
+- Custom: your URL + `/v1/chat/completions` and `/v1/models`; the key, if you set one, goes as a Bearer to that URL. `http://` is accepted only for `localhost`/`127.0.0.1`.
+- With each message the following are sent to the provider: the key, the agent's system prompt and the conversation history (the last 100 messages, at most ~300,000 characters; if truncated, the app tells you). The chosen provider's data policies apply.
+- There are no other hosts: no telemetry, no CDN, no external font or script. Links in responses open only on click (`noopener noreferrer`), and the page requests `referrer: no-referrer`.
 
-**Content-Security-Policy** (în `<meta>`): scripturile sunt permise doar pe baza hash-ului scriptului din pagină (nicio injecție de `<script>` nu rulează); `connect-src` este limitat la cele trei API-uri plus `localhost`/`127.0.0.1` (orice port); fără imagini, fonturi, iframe-uri sau formulare externe. Stilurile inline sunt permise (`style-src 'unsafe-inline'`), pentru că aplicația generează atribute `style`.
+**The `anthropic-dangerous-direct-browser-access` header**: the Anthropic API refuses CORS calls from the browser by default, precisely because a key in a web page is risky. The header is your explicit confirmation that you accept this risk. The app sends it because otherwise it cannot talk to Anthropic from a single HTML file.
 
-### Endpoint personalizat extern (OpenRouter, DeepSeek, Mistral etc.)
+**Content-Security-Policy** (in `<meta>`): scripts are allowed only on the basis of the page script's hash (no `<script>` injection runs); `connect-src` is limited to the three APIs plus `localhost`/`127.0.0.1` (any port); no external images, fonts, iframes or forms. Inline styles are allowed (`style-src 'unsafe-inline'`), because the app generates `style` attributes.
 
-Cu CSP-ul livrat, un endpoint personalizat funcționează doar pe `localhost`/`127.0.0.1`. Pentru un host extern, CSP-ul trebuie relaxat — iar asta slăbește protecția cheilor (un script injectat ar putea trimite cheile către acel host, cât timp scriptul poate rula; hash-ul din `script-src` îl împiedică, dar apărarea e pe un singur strat). Dacă vrei totuși:
+### External custom endpoint (OpenRouter, DeepSeek, Mistral, etc.)
 
-1. Descarcă `index.html` și deschide-l într-un editor.
-2. În eticheta `<meta http-equiv="Content-Security-Policy" …>` adaugă gazda ta la `connect-src`, de exemplu `https://openrouter.ai`.
-3. **Nu modifica nimic în blocul `<script>`**: hash-ul din CSP ar înceta să se potrivească și pagina nu va mai porni. Dacă modifici scriptul, recalculează hash-ul SHA-256 și înlocuiește-l în `script-src`.
-4. Deschide fișierul local (sau publică-ți propria copie).
+With the shipped CSP, a custom endpoint works only on `localhost`/`127.0.0.1`. For an external host, the CSP must be relaxed — and that weakens key protection (an injected script could send the keys to that host, as long as the script can run; the hash in `script-src` prevents it, but the defence is single-layered). If you still want to:
 
-Pentru Ollama: pornește-l cu variabila `OLLAMA_ORIGINS` setată la originea paginii (ex. `https://chiuta.github.io`), altfel browserul blochează răspunsul (CORS). Din pagina publicată prin HTTPS, `http://localhost` e permis de browsere ca excepție; o adresă de rețea locală `http://192.168.x.x` nu este.
+1. Download `index.html` and open it in an editor.
+2. In the `<meta http-equiv="Content-Security-Policy" …>` tag add your host to `connect-src`, for example `https://openrouter.ai`.
+3. **Do not modify anything in the `<script>` block**: the hash in the CSP would no longer match and the page will not start. If you modify the script, recompute the SHA-256 hash and replace it in `script-src`.
+4. Open the file locally (or publish your own copy).
 
-## Limite și avertismente
+For Ollama: start it with the `OLLAMA_ORIGINS` variable set to the page's origin (e.g. `https://chiuta.github.io`), otherwise the browser blocks the response (CORS). From the page published over HTTPS, `http://localhost` is allowed by browsers as an exception; a local network address `http://192.168.x.x` is not.
 
-- Numele modelelor se schimbă des. Sugestiile din aplicație (Anthropic: `claude-sonnet-5-5`, `claude-opus-5-5`, `claude-haiku-5-5`, `claude-fable-5-1`; OpenAI: `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6-luna`; Google: `gemini-3.8-flash`, `gemini-3.1-pro-preview`, `gemini-3.5-flash`, `gemini-3.1-flash-lite`) au fost verificate manual în documentațiile oficiale la 2026-10-08 și pot fi depășite; nu garantez disponibilitatea lor pentru contul tău, nici tarifele. Dacă ai folosit o versiune mai veche, modelele salvate în Setări și în conversații vechi pot fi inexistente: schimbă-le.
-- Nu am testat cu API-urile reale (am folosit doar răspunsuri simulate). Particularități reale ale furnizorilor (CORS pe anumite endpoint-uri, parametri respinși de unele modele) pot apărea.
-- Limită fixă de 4096 tokeni de ieșire la Anthropic. Fără apeluri de unelte, fără atașamente/imagini, fără căutare web.
-- Conversațiile lungi: se trimit doar ultimele mesaje (vezi mai sus); `localStorage` are de obicei ~5 MB — la depășire primești avertisment și conversațiile nu se mai salvează: exportă-le.
-- Un răspuns de model poate fi greșit, inventat sau nepotrivit; verifică-l înainte să te bazezi pe el. Textul unui link afișat poate diferi de adresa reală (adresa apare la trecerea cursorului, în `title`).
-- Costurile apelurilor sunt ale tale; aplicația nu limitează cheltuielile.
-- Proiect personal, oferit „ca atare”, fără garanții.
+## Limits and warnings
 
-## Rulare locală / offline
+- Model names change often. The suggestions in the app (Anthropic: `claude-sonnet-5-5`, `claude-opus-5-5`, `claude-haiku-5-5`, `claude-fable-5-1`; OpenAI: `gpt-6-astra`, `gpt-6.1-sol`, `gpt-6-luna`; Google: `gemini-3.8-flash`, `gemini-3.1-pro-preview`, `gemini-3.5-flash`, `gemini-3.1-flash-lite`) were checked manually in the official documentation on 2026-10-08 and may be out of date; I do not guarantee their availability for your account, nor the prices. If you used an older version, the models saved in Settings and in old conversations may no longer exist: change them.
+- I did not test with the real APIs (I used only mocked responses). Real provider peculiarities (CORS on certain endpoints, parameters rejected by some models) may appear.
+- Fixed limit of 4096 output tokens for Anthropic. No tool calls, no attachments/images, no web search.
+- Long conversations: only the last messages are sent (see above); `localStorage` is usually ~5 MB — when exceeded you get a warning and conversations are no longer saved: export them.
+- A model's response may be wrong, made up or inappropriate; check it before relying on it. The text of a displayed link may differ from the real address (the address appears on hover, in `title`).
+- The costs of the calls are yours; the app does not limit spending.
+- Personal project, offered "as is", without warranties.
 
-Descarcă `index.html` și deschide-l în browser. Pagina pornește fără internet, dar chat-ul cere rețea (sau un model local, ex. Ollama pe `localhost`).
+## Running locally / offline
 
-## Istoric / Changelog
+Download `index.html` and open it in a browser. The page starts without internet, but the chat requires a network (or a local model, e.g. Ollama on `localhost`).
+
+## History / Changelog
 
 ### 1.1.0 — 2026-10-14
-- Copie de rezervă și etichetare date (fff-kit).
+- Backup and data labelling (fff-kit).
 
-### 1.0.0 — 12 octombrie 2026
-- Versiunea și data ultimei actualizări sunt afișate în aplicație (sub câmpul de mesaj).
+### 1.0.0 — 12 October 2026
+- The version and the date of the last update are displayed in the app (below the message field).
 
-### 11.10.2026 (a treia actualizare) — 11 octombrie 2026
-- Corectat: dacă trimiteai primul mesaj fără cheie API (sau fără endpoint/model), textul tastat se pierdea; acum rămâne în câmpul de scris, iar notificarea spune asta.
-- Starea goală arată un pas de pornire cu buton „Deschide Setări” cât timp niciun furnizor nu are cheie (sau endpoint) salvată; dispare după ce adaugi una.
+### 11.10.2026 (third update) — 11 October 2026
+- Fixed: if you sent the first message without an API key (or without an endpoint/model), the typed text was lost; now it stays in the input field, and the notification says so.
+- The empty state shows a starting step with an "Open Settings" button as long as no provider has a saved key (or endpoint); it disappears once you add one.
 
-### 11.10.2026 (a doua actualizare) — 11 octombrie 2026
-- Căutare în conversații (titlu și text), export al conversației curente în Markdown și stil de tipărire pentru conversație.
+### 11.10.2026 (second update) — 11 October 2026
+- Search in conversations (title and text), export of the current conversation to Markdown and a print style for the conversation.
 
-### 11.10.2026 — 11 octombrie 2026
-- Accesibilitate: un singur titlu h1 în zona principală (cel din bara laterală era ascuns pe mobil); verificare axe fără încălcări la 1280 și 360 px.
-- Sugestiile de modele rămân cele verificate la 2026-10-08 (data apare în aplicație); nu au fost reverificate pe 11.10.2026 — verifică lista în Setări sau cu „Actualizează lista de modele”.
+### 11.10.2026 — 11 October 2026
+- Accessibility: a single h1 heading in the main area (the one in the sidebar was hidden on mobile); axe check with no violations at 1280 and 360 px.
+- The model suggestions remain those verified on 2026-10-08 (the date appears in the app); they were not re-verified on 11.10.2026 — check the list in Settings or with "Update model list".
 
-## Licență
+## License
 
-MIT — vezi fișierul LICENSE.
+MIT — see the LICENSE file.
 
-## Autor
+## Author
 
 Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf
 
-## English summary
+## Summary
 
 Nexus fără frontiere is a single-file, Romanian-language multi-provider AI chat client: Anthropic, OpenAI, Google Gemini or any OpenAI-compatible endpoint, called directly from your browser (SSE streaming for Anthropic and OpenAI-compatible; Gemini is non-streaming). It has no server and no telemetry, but it is not offline: messages and history go straight to the provider you choose, and API keys are stored unencrypted in localStorage. A strict CSP limits connections to the three APIs plus localhost; external custom endpoints require editing the CSP in a local copy (documented). Markdown is rendered by a small escaping renderer (tested against XSS payloads); export contains no keys. "Code" and "Cowork" are personas, not integrations. Tested only with mocked API responses.
