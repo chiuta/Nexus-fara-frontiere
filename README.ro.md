@@ -10,7 +10,7 @@ Hub personal de chat AI într-un singur fișier HTML: vorbești direct din brows
 
 **Live:** https://chiuta.github.io/Nexus-fara-frontiere/
 
-![Captură de ecran (conversație demonstrativă)](screenshot.png)
+![Captură de ecran (conversație demonstrativă)](screenshot.ro.png)
 
 ## Ce este
 

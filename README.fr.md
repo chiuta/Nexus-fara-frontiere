@@ -10,7 +10,7 @@ Hub personnel de chat IA dans un seul fichier HTML : vous parlez directement dep
 
 **Application en ligne :** https://chiuta.github.io/Nexus-fara-frontiere/
 
-![Capture d'écran (conversation de démonstration)](screenshot.png)
+![Capture d'écran (conversation de démonstration)](screenshot.fr.png)
 
 ## De quoi s'agit-il
 

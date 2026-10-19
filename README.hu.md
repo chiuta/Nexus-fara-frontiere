@@ -10,7 +10,7 @@ Személyes MI-csevegőközpont egyetlen HTML-fájlban: közvetlenül a böngész
 
 **Online alkalmazás:** https://chiuta.github.io/Nexus-fara-frontiere/
 
-![Képernyőkép (bemutató beszélgetés)](screenshot.png)
+![Képernyőkép (bemutató beszélgetés)](screenshot.hu.png)
 
 ## Mi ez
 

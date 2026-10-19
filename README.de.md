@@ -10,7 +10,7 @@ Persönlicher KI-Chat-Hub in einer einzigen HTML-Datei: Du sprichst direkt aus d
 
 **Live-App:** https://chiuta.github.io/Nexus-fara-frontiere/
 
-![Screenshot (Demo-Unterhaltung)](screenshot.png)
+![Screenshot (Demo-Unterhaltung)](screenshot.de.png)
 
 ## Was es ist
 

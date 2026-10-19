@@ -10,7 +10,7 @@ A personal AI chat hub in a single HTML file: you talk directly from the browser
 
 **Live app:** https://chiuta.github.io/Nexus-fara-frontiere/
 
-![Screenshot (demo conversation)](screenshot.png)
+![Screenshot (demo conversation)](screenshot.en.png)
 
 ## What it is
 

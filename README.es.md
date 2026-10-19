@@ -10,7 +10,7 @@ Centro personal de chat con IA en un único archivo HTML: hablas directamente de
 
 **Aplicación en línea:** https://chiuta.github.io/Nexus-fara-frontiere/
 
-![Captura de pantalla (conversación de demostración)](screenshot.png)
+![Captura de pantalla (conversación de demostración)](screenshot.es.png)
 
 ## Qué es
 

@@ -10,7 +10,7 @@ Hub personale di chat IA in un unico file HTML: parli direttamente dal browser c
 
 **App online:** https://chiuta.github.io/Nexus-fara-frontiere/
 
-![Schermata (conversazione dimostrativa)](screenshot.png)
+![Schermata (conversazione dimostrativa)](screenshot.it.png)
 
 ## Che cos'è
 
