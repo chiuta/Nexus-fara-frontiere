@@ -114,6 +114,6 @@ MIT — vezi fișierul LICENSE.
 
 Alexio — Alexandru-Ionuț Chiuță, contact: alexio@trom.tf
 
-## English summary
+## Rezumat
 
-Nexus fără frontiere is a single-file, Romanian-language multi-provider AI chat client: Anthropic, OpenAI, Google Gemini or any OpenAI-compatible endpoint, called directly from your browser (SSE streaming for Anthropic and OpenAI-compatible; Gemini is non-streaming). It has no server and no telemetry, but it is not offline: messages and history go straight to the provider you choose, and API keys are stored unencrypted in localStorage. A strict CSP limits connections to the three APIs plus localhost; external custom endpoints require editing the CSP in a local copy (documented). Markdown is rendered by a small escaping renderer (tested against XSS payloads); export contains no keys. "Code" and "Cowork" are personas, not integrations. Tested only with mocked API responses.
+Nexus fără frontiere este un client de chat AI multi-furnizor într-un singur fișier, în limba română: Anthropic, OpenAI, Google Gemini sau orice punct final compatibil OpenAI, apelate direct din browser (streaming SSE pentru Anthropic și compatibil OpenAI; Gemini nu face streaming). Nu are server și nici telemetrie, dar nu este offline: mesajele și istoricul merg direct la furnizorul ales, iar cheile API se stochează necriptat în localStorage. Un CSP strict limitează conexiunile la cele trei API-uri plus localhost; punctele finale personalizate externe necesită editarea CSP într-o copie locală (documentat). Markdown este redat de un mic randator cu escapare (testat împotriva sarcinilor XSS); exportul nu conține chei. „Code” și „Cowork” sunt personaje, nu integrări. Testat doar cu răspunsuri API simulate.
