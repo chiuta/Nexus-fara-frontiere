@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · **Português** · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versão:** 1.2.2 · **Última atualização:** 2026-10-22
+**Versão:** 1.2.3 · **Última atualização:** 2026-10-22
 
 Idiomas da interface: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -91,6 +91,8 @@ Para o Ollama: inicie-o com a variável `OLLAMA_ORIGINS` definida para a origem 
 Transfira `index.html` e abra-o no navegador. A página arranca sem internet, mas o chat exige rede (ou um modelo local, p. ex. Ollama em `localhost`).
 
 ## Histórico / Changelog
+
+- 1.2.3 — 2026-10-22: Os dois window.confirm (eliminar conversa, apagar todos os dados) foram substituídos por diálogos integrados; os títulos nas respostas do modelo já não criam h1/h2 adicionais na página; texto ≥ 12 px e ligações do rodapé maiores em telemóvel.
 
 - 1.2.2 — 2026-10-22: **correção**: o texto de exemplo do campo «URL de base» («ou») segue agora o idioma escolhido.
 ### 1.1.0 — 2026-10-14

@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 1.2.2 · **Zuletzt aktualisiert:** 2026-10-22
+**Version:** 1.2.3 · **Zuletzt aktualisiert:** 2026-10-22
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -91,6 +91,8 @@ Für Ollama: Starte es mit der auf den Ursprung der Seite gesetzten Variable `OL
 Lade `index.html` herunter und öffne sie im Browser. Die Seite startet ohne Internet, aber der Chat benötigt ein Netzwerk (oder ein lokales Modell, z. B. Ollama auf `localhost`).
 
 ## Verlauf / Changelog
+
+- 1.2.3 — 2026-10-22: Die beiden window.confirm-Abfragen (Unterhaltung löschen, alle Daten löschen) sind durch Dialoge in der Seite ersetzt; Überschriften in Modellantworten erzeugen keine zusätzlichen h1/h2 mehr; Text ≥ 12 px und größere Fußzeilen-Links auf dem Handy.
 
 - 1.2.2 — 2026-10-22: **Korrektur**: der Beispieltext im Feld „Basis-URL“ („oder“) folgt jetzt der gewählten Sprache.
 ### 1.1.0 — 2026-10-14
