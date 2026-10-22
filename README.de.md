@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 1.2.0 · **Zuletzt aktualisiert:** 2026-10-19
+**Version:** 1.2.1 · **Zuletzt aktualisiert:** 2026-10-22
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -61,6 +61,9 @@ Im Code und, wo „Test“ steht, in einem Headless-Browser (Chromium/Playwright
 **Der Header `anthropic-dangerous-direct-browser-access`**: Die Anthropic-API lehnt CORS-Aufrufe aus dem Browser standardmäßig ab, gerade weil ein Schlüssel in einer Webseite riskant ist. Der Header ist deine ausdrückliche Bestätigung, dass du dieses Risiko akzeptierst. Die Anwendung sendet ihn, da sie sonst aus einer einzigen HTML-Datei nicht mit Anthropic sprechen kann.
 
 **Content-Security-Policy** (in `<meta>`): Skripte sind nur auf Grundlage des Hashes des Seitenskripts erlaubt (keine `<script>`-Injektion wird ausgeführt); `connect-src` ist auf die drei APIs plus `localhost`/`127.0.0.1` (beliebiger Port) beschränkt; keine externen Bilder, Schriften, iframes oder Formulare. Inline-Stile sind erlaubt (`style-src 'unsafe-inline'`), weil die Anwendung `style`-Attribute erzeugt.
+
+### 1.2.1 — 2026-10-22
+- Der Seitentitel und die Meta-Tags für Beschreibung/Open Graph folgen der Oberflächensprache.
 
 ### Externer benutzerdefinierter Endpunkt (OpenRouter, DeepSeek, Mistral usw.)
 

@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.2.0 · **Utolsó frissítés:** 2026-10-19
+**Verzió:** 1.2.1 · **Utolsó frissítés:** 2026-10-22
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -61,6 +61,9 @@ A kódban és – ahol „teszt” áll – fej nélküli böngészőben (Chromi
 **Az `anthropic-dangerous-direct-browser-access` fejléc**: az Anthropic API alapértelmezés szerint elutasítja a böngészőből érkező CORS-hívásokat, éppen azért, mert egy weboldalon lévő kulcs kockázatos. A fejléc a te kifejezett megerősítésed arról, hogy elfogadod ezt a kockázatot. Az alkalmazás azért küldi, mert enélkül egyetlen HTML-fájlból nem tud az Anthropickal beszélni.
 
 **Content-Security-Policy** (a `<meta>`-ban): a szkriptek csak az oldal szkriptjének hash-e alapján engedélyezettek (semmilyen `<script>`-befecskendezés nem fut le); a `connect-src` a három API-ra plusz a `localhost`/`127.0.0.1`-re (bármely port) korlátozódik; külső képek, betűtípusok, iframe-ek és űrlapok nélkül. A beágyazott stílusok engedélyezettek (`style-src 'unsafe-inline'`), mert az alkalmazás `style` attribútumokat generál.
+
+### 1.2.1 — 2026-10-22
+- Az oldal címe és a leírás/Open Graph meta címkék követik a felület nyelvét.
 
 ### Külső egyéni végpont (OpenRouter, DeepSeek, Mistral stb.)
 

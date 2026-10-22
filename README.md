@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.2.0 · **Last updated:** 2026-10-19
+**Version:** 1.2.1 · **Last updated:** 2026-10-22
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -61,6 +61,9 @@ Verified in the code and, where it says "test", in a headless browser (Chromium/
 **The `anthropic-dangerous-direct-browser-access` header**: the Anthropic API refuses CORS calls from the browser by default, precisely because a key in a web page is risky. The header is your explicit confirmation that you accept this risk. The app sends it because otherwise it cannot talk to Anthropic from a single HTML file.
 
 **Content-Security-Policy** (in `<meta>`): scripts are allowed only on the basis of the page script's hash (no `<script>` injection runs); `connect-src` is limited to the three APIs plus `localhost`/`127.0.0.1` (any port); no external images, fonts, iframes or forms. Inline styles are allowed (`style-src 'unsafe-inline'`), because the app generates `style` attributes.
+
+### 1.2.1 — 2026-10-22
+- The page title and the description/Open Graph meta tags now follow the interface language.
 
 ### External custom endpoint (OpenRouter, DeepSeek, Mistral, etc.)
 

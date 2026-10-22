@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.2.0 · **Ultima actualizare:** 2026-10-19
+**Versiune:** 1.2.1 · **Ultima actualizare:** 2026-10-22
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -61,6 +61,9 @@ Verificate în cod și, unde scrie „test”, într-un browser headless (Chromi
 **Antetul `anthropic-dangerous-direct-browser-access`**: API-ul Anthropic refuză implicit apelurile CORS din browser, tocmai pentru că o cheie într-o pagină web e riscantă. Antetul este confirmarea explicită, din partea ta, că accepți acest risc. Aplicația îl trimite pentru că altfel nu poate vorbi cu Anthropic dintr-un singur fișier HTML.
 
 **Content-Security-Policy** (în `<meta>`): scripturile sunt permise doar pe baza hash-ului scriptului din pagină (nicio injecție de `<script>` nu rulează); `connect-src` este limitat la cele trei API-uri plus `localhost`/`127.0.0.1` (orice port); fără imagini, fonturi, iframe-uri sau formulare externe. Stilurile inline sunt permise (`style-src 'unsafe-inline'`), pentru că aplicația generează atribute `style`.
+
+### 1.2.1 — 2026-10-22
+- Titlul paginii și meta tag-urile de descriere/Open Graph urmează limba interfeței.
 
 ### Endpoint personalizat extern (OpenRouter, DeepSeek, Mistral etc.)
 
