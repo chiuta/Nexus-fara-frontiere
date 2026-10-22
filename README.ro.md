@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.2.3 · **Ultima actualizare:** 2026-10-22
+**Versiune:** 1.2.4 · **Ultima actualizare:** 2026-10-22
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -91,6 +91,10 @@ Pentru Ollama: pornește-l cu variabila `OLLAMA_ORIGINS` setată la originea pag
 Descarcă `index.html` și deschide-l în browser. Pagina pornește fără internet, dar chat-ul cere rețea (sau un model local, ex. Ollama pe `localhost`).
 
 ## Istoric / Changelog
+
+### 1.2.4 — 2026-10-22
+
+fff-kit 1.1.2: PBKDF2 600 000 iterații, protecție anti-clickjacking.
 
 - 1.2.3 — 2026-10-22: Cele două window.confirm (ștergere conversație, ștergere date) sunt înlocuite cu dialoguri în pagină; titlurile din răspunsurile modelului nu mai creează h1/h2 suplimentare în pagină; text ≥ 12 px și linkuri mai late în subsol pe mobil.
 

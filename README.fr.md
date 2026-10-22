@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · **Français** · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version :** 1.2.3 · **Dernière mise à jour :** 2026-10-22
+**Version :** 1.2.4 · **Dernière mise à jour :** 2026-10-22
 
 Langues de l'interface : **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -91,6 +91,10 @@ Pour Ollama : démarrez-le avec la variable `OLLAMA_ORIGINS` définie sur l'orig
 Téléchargez `index.html` et ouvrez-le dans le navigateur. La page démarre sans internet, mais le chat nécessite un réseau (ou un modèle local, ex. Ollama sur `localhost`).
 
 ## Historique / Changelog
+
+### 1.2.4 — 2026-10-22
+
+fff-kit 1.1.2 : PBKDF2 600 000 itérations, protection anti-clickjacking.
 
 - 1.2.3 — 2026-10-22 : Les deux window.confirm (suppression d’une conversation, effacement des données) sont remplacés par des dialogues intégrés ; les titres des réponses du modèle ne créent plus de h1/h2 supplémentaires dans la page ; texte ≥ 12 px et liens du pied de page plus grands sur mobile.
 
