@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · **Italiano** · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versione:** 1.2.1 · **Ultimo aggiornamento:** 2026-10-22
+**Versione:** 1.2.2 · **Ultimo aggiornamento:** 2026-10-22
 
 Lingue dell'interfaccia: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -92,6 +92,7 @@ Scarica `index.html` e aprilo nel browser. La pagina si avvia senza internet, ma
 
 ## Cronologia / Changelog
 
+- 1.2.2 — 2026-10-22: **correzione**: il testo di esempio del campo «URL di base» («o») segue ora la lingua scelta.
 ### 1.1.0 — 2026-10-14
 - Copia di riserva ed etichettatura dei dati (fff-kit).
 
