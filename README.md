@@ -2,7 +2,7 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 1.2.4 · **Last updated:** 2026-10-22
+**Version:** 1.2.5 · **Last updated:** 2026-10-22
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -91,6 +91,10 @@ For Ollama: start it with the `OLLAMA_ORIGINS` variable set to the page's origin
 Download `index.html` and open it in a browser. The page starts without internet, but the chat requires a network (or a local model, e.g. Ollama on `localhost`).
 
 ## History / Changelog
+
+### 1.2.5 — 2026-10-22
+
+fff-kit 1.1.4: touch targets and minimum text size.
 
 ### 1.2.4 — 2026-10-22
 

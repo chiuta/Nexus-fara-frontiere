@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · **Español** · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versión:** 1.2.4 · **Última actualización:** 2026-10-22
+**Versión:** 1.2.5 · **Última actualización:** 2026-10-22
 
 Idiomas de la interfaz: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -91,6 +91,10 @@ Para Ollama: arráncalo con la variable `OLLAMA_ORIGINS` establecida en el orige
 Descarga `index.html` y ábrelo en el navegador. La página arranca sin internet, pero el chat requiere red (o un modelo local, p. ej. Ollama en `localhost`).
 
 ## Historial / Changelog
+
+### 1.2.5 — 2026-10-22
+
+fff-kit 1.1.4: áreas táctiles y texto mínimo.
 
 ### 1.2.4 — 2026-10-22
 
