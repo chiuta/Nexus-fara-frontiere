@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.2.6 · **Utolsó frissítés:** 2026-10-23
+**Verzió:** 1.2.7 · **Utolsó frissítés:** 2026-10-23
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -91,6 +91,10 @@ Ollama esetén: indítsd el az `OLLAMA_ORIGINS` változóval, amelyet az oldal e
 Töltsd le az `index.html` fájlt, és nyisd meg a böngészőben. Az oldal internet nélkül elindul, de a csevegéshez hálózat (vagy helyi modell, pl. Ollama a `localhost` címen) kell.
 
 ## Előzmények / Changelog
+
+### 1.2.7 — 2026-10-23
+
+Touch targets of at least 44 px for the main controls on touch screens (sidebar button, title, agent/provider/model fields, empty-state buttons, delete conversation).
 
 ### 1.2.5 — 2026-10-22
 
