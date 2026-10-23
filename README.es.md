@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · **Español** · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versión:** 1.2.6 · **Última actualización:** 2026-10-23
+**Versión:** 1.2.7 · **Última actualización:** 2026-10-23
 
 Idiomas de la interfaz: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -91,6 +91,10 @@ Para Ollama: arráncalo con la variable `OLLAMA_ORIGINS` establecida en el orige
 Descarga `index.html` y ábrelo en el navegador. La página arranca sin internet, pero el chat requiere red (o un modelo local, p. ej. Ollama en `localhost`).
 
 ## Historial / Changelog
+
+### 1.2.7 — 2026-10-23
+
+Touch targets of at least 44 px for the main controls on touch screens (sidebar button, title, agent/provider/model fields, empty-state buttons, delete conversation).
 
 ### 1.2.5 — 2026-10-22
 
