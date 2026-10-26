@@ -2,7 +2,7 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 1.2.7 · **Ultima actualizare:** 2026-10-26
+**Versiune:** 2.0.0 · **Ultima actualizare:** 2026-10-26
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -20,6 +20,7 @@ Un client de chat fără server propriu: pagina nu are backend, nu are conturi �
 
 Verificate în cod și, unde scrie „test”, într-un browser headless (Chromium/Playwright) cu răspunsuri **simulate** — nu am rulat apeluri reale către API-urile furnizorilor.
 
+- **Fluxuri de agenți (2.0):** în ⛓ Fluxuri construiești un lanț de pași (instrucțiune către model, unealtă locală, verificare cu reluare/oprire/avertisment), îl rulezi local pas cu pas și primești un jurnal complet (exportabil .md). Limite: 12 pași, 20 apeluri la model, 3 reluări. Șabloane exportabile/importabile (JSON, fără chei). Instrucțiunile trimit textul către furnizorul conversației curente; uneltele și verificările rămân în browser.
 - Patru furnizori: Anthropic (Messages API), OpenAI (Chat Completions), Google (Gemini `generateContent`) și „Personalizat” (orice endpoint compatibil OpenAI: Ollama, LM Studio, OpenRouter etc.).
 - Streaming SSE pentru Anthropic și pentru OpenAI/compatibile (test). **Google nu face streaming**: răspunsul apare întreg, la final.
 - Buton „Oprește” (anulează cererea; textul parțial rămâne, marcat „oprit”) și întrerupere automată după 5 minute fără niciun răspuns.

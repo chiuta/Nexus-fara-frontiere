@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · **Deutsch** · [Magyar](README.hu.md)
 
-**Version:** 1.2.7 · **Zuletzt aktualisiert:** 2026-10-26
+**Version:** 2.0.0 · **Zuletzt aktualisiert:** 2026-10-26
 
 Oberflächensprachen: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -20,6 +20,7 @@ Ein Chat-Client ohne eigenen Server: Die Seite hat kein Backend, keine Konten un
 
 Im Code und, wo „Test“ steht, in einem Headless-Browser (Chromium/Playwright) mit **simulierten** Antworten geprüft — ich habe keine echten Aufrufe an die APIs der Anbieter durchgeführt.
 
+- **Agent flows (2.0):** in ⛓ Flows you build a chain of steps (model instruction, local tool, check with retry/stop/warn), run it locally step by step and get a full log (exportable .md). Limits: 12 steps, 20 model calls, 3 retries. Shareable JSON templates (no keys). Instruction steps send text to the current conversation's provider; tools and checks stay in the browser.
 - Vier Anbieter: Anthropic (Messages API), OpenAI (Chat Completions), Google (Gemini `generateContent`) und „Benutzerdefiniert“ (jeder OpenAI-kompatible Endpunkt: Ollama, LM Studio, OpenRouter usw.).
 - SSE-Streaming für Anthropic und für OpenAI/kompatible (Test). **Google streamt nicht**: Die Antwort erscheint am Ende vollständig.
 - Schaltfläche „Stopp“ (bricht die Anfrage ab; der Teiltext bleibt, als „gestoppt“ markiert) und automatischer Abbruch nach 5 Minuten ohne jede Antwort.

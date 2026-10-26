@@ -2,7 +2,7 @@
 
 [English](README.md) · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · **Magyar**
 
-**Verzió:** 1.2.7 · **Utolsó frissítés:** 2026-10-26
+**Verzió:** 2.0.0 · **Utolsó frissítés:** 2026-10-26
 
 A felület nyelvei: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
@@ -20,6 +20,7 @@ Saját szerver nélküli csevegőkliens: az oldalnak nincs backendje, nincsenek 
 
 A kódban és – ahol „teszt” áll – fej nélküli böngészőben (Chromium/Playwright) **szimulált** válaszokkal ellenőrizve — nem futtattam valódi hívásokat a szolgáltatók API-jaira.
 
+- **Agent flows (2.0):** in ⛓ Flows you build a chain of steps (model instruction, local tool, check with retry/stop/warn), run it locally step by step and get a full log (exportable .md). Limits: 12 steps, 20 model calls, 3 retries. Shareable JSON templates (no keys). Instruction steps send text to the current conversation's provider; tools and checks stay in the browser.
 - Négy szolgáltató: Anthropic (Messages API), OpenAI (Chat Completions), Google (Gemini `generateContent`) és „Egyéni” (bármely OpenAI-kompatibilis végpont: Ollama, LM Studio, OpenRouter stb.).
 - SSE-streaming az Anthropic és az OpenAI/kompatibilis szolgáltatók esetén (teszt). **A Google nem streamel**: a válasz egészében, a végén jelenik meg.
 - „Leállítás” gomb (megszakítja a kérést; a részleges szöveg megmarad, „leállítva” jelöléssel) és automatikus megszakítás 5 perc válasz nélkül.
