@@ -2,15 +2,15 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 2.1.0 · **Ultima actualizare:** 2026-10-27
+**Versiune:** 2.2.0 · **Ultima actualizare:** 2026-10-27
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
-**Stare:** stabilă (2.1.0). Criptarea opțională cu parolă a cheilor API este nouă și **nu a fost auditată de un terț**.
+**Stare:** stabilă (2.2.0). Criptarea opțională cu parolă a cheilor API este nouă și **nu a fost auditată de un terț**.
 
 **Offline:** nu. Interfața se încarcă offline după prima vizită, dar orice mesaj cere conexiune la furnizorul ales (sau la un endpoint local, de ex. Ollama).
 
-Hub personal de chat AI într-un singur fișier HTML: vorbești direct din browser cu Anthropic, OpenAI, Google sau cu un endpoint compatibil OpenAI. **Nu este o aplicație offline** și cheile tale stau în browser, implicit necriptate (criptare opțională cu parolă din 2.1.0) — citește secțiunea „Confidențialitate și rețea”.
+Hub personal de chat AI într-un singur fișier HTML: vorbești direct din browser cu Anthropic, OpenAI, Google sau cu un endpoint compatibil OpenAI. **Nu este o aplicație offline** și cheile tale stau în browser, implicit necriptate (criptare opțională cu parolă din 2.2.0) — citește secțiunea „Confidențialitate și rețea”.
 
 **Live:** https://chiuta.github.io/Nexus-fara-frontiere/
 
@@ -89,6 +89,7 @@ Pentru Ollama: pornește-l cu variabila `OLLAMA_ORIGINS` setată la originea pag
 - La deschidere aplicația cere parola (poți închide dialogul; cheile rămân indisponibile și se pot debloca din Setări). Cheile deblocate stau doar în memorie; „Blochează acum” le scoate.
 - **Limite spuse deschis:** componenta e mică și **nu a fost auditată de un terț**; parola nu se poate recupera (dacă o uiți, reintroduci cheile); nu protejează împotriva unui script rău-intenționat sau a unei extensii care rulează în pagină cât timp cheile sunt deblocate; o parolă scurtă poate fi ghicită offline. Textele cardului există în română și engleză (celelalte limbi folosesc engleza).
 - „Șterge toate datele locale” șterge și seiful. Teste: `node tests/keyvault-core.test.mjs` și `node tests/keyvault-ui.test.mjs`.
+- Limbi: cardul și dialogurile există în toate cele 8 limbi ale interfeței (RO și EN scrise de mână; FR/IT/ES/PT/DE/HU sunt **traduceri automate, neverificate de vorbitori nativi**). Test: `node tests/keyvault-i18n.test.mjs`. Avertismentul „stocate în clar” din Setări menționează acum criptarea opțională în fiecare limbă.
 
 ## Nexus fără frontiere față de AI Liber
 
