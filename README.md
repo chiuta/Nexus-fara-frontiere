@@ -2,15 +2,15 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 2.1.0 · **Last updated:** 2026-10-27
+**Version:** 2.2.0 · **Last updated:** 2026-10-27
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
-**Status:** stable (2.1.0). The optional password encryption of API keys is new and **has not been audited by a third party**.
+**Status:** stable (2.2.0). The optional password encryption of API keys is new and **has not been audited by a third party**.
 
 **Offline:** no. The interface loads offline after the first visit, but every message needs a network connection to the chosen provider (or a local endpoint such as Ollama).
 
-A personal AI chat hub in a single HTML file: you talk directly from the browser to Anthropic, OpenAI, Google or an OpenAI-compatible endpoint. **It is not an offline app** and your keys sit in the browser, unencrypted by default (optional password encryption since 2.1.0) — read the section "Privacy and network".
+A personal AI chat hub in a single HTML file: you talk directly from the browser to Anthropic, OpenAI, Google or an OpenAI-compatible endpoint. **It is not an offline app** and your keys sit in the browser, unencrypted by default (optional password encryption since 2.2.0) — read the section "Privacy and network".
 
 **Live app:** https://chiuta.github.io/Nexus-fara-frontiere/
 
@@ -89,6 +89,7 @@ In ⚙ Settings there is a "Password protection" card. **Off by default**: keys 
 - On opening, the app asks for the password (you can dismiss the dialog; the keys stay unavailable and can be unlocked from Settings). Unlocked keys live in memory only; "Lock now" drops them.
 - **Honest limits:** the component is small and **has not been audited by a third party**; the password cannot be recovered (if you forget it, enter the keys again); it does not protect against a malicious script or extension running in the page while the keys are unlocked; a short password can be guessed offline. The card's text exists in Romanian and English (other languages fall back to English).
 - "Delete all local data" also removes the vault. Tests: `node tests/keyvault-core.test.mjs` and `node tests/keyvault-ui.test.mjs`.
+- Languages: the card and dialogs are available in all 8 interface languages (RO and EN written by hand; FR/IT/ES/PT/DE/HU are **machine translations, not verified by native speakers**). Test: `node tests/keyvault-i18n.test.mjs`. The "stored in plain text" warning in Settings now also mentions the optional encryption in every language.
 
 ## Nexus fără frontiere vs. AI Liber
 
