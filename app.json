@@ -42,16 +42,17 @@
   "permissions": [
     "clipboard",
     "serviceWorker",
-    "localStorage"
+    "localStorage",
+    "Web Crypto"
   ],
   "storageKeys": [],
-  "sizeBytes": 393863,
-  "sha256": "07a7069ab416b26748c62eff1792e0cf8e3aac884acd8adeee6d7bcb8b096f51",
+  "sizeBytes": 412030,
+  "sha256": "2bc8c35d9517c814245c01c6a551874dcd12c64e17a3199c3097e4f44677044f",
   "csp": {
     "present": true,
     "directives": {
       "default-src": "'none'",
-      "script-src": "sha256×3",
+      "script-src": "sha256×4",
       "style-src": "'unsafe-inline'",
       "img-src": "'self' data:",
       "connect-src": "https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*",
