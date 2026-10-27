@@ -1,0 +1,31 @@
+// Rulează din directorul aplicației: node tests/keyvault-core.test.mjs  — extrage <script id="keyvault"> din index.html și testează nucleul criptografic (webcrypto din Node), fără DOM, fără rețea.
+import path from "path"; import {fileURLToPath} from "url";
+import fs from "fs"; import vm from "vm"; import {webcrypto} from "crypto";
+const here = path.dirname(fileURLToPath(import.meta.url)); const arg = process.argv[2] || path.join(here, "../index.html"); let src = fs.readFileSync(arg, "utf8");
+if (arg.endsWith(".html")) { const m = /<script id="keyvault">([\s\S]*?)<\/script>/.exec(src); if (!m) { console.log("FAIL  lipsește <script id=keyvault>"); process.exit(1); } src = m[1]; }
+const g = {crypto: webcrypto, TextEncoder, TextDecoder, btoa, atob, globalThis: null}; g.globalThis = g; g.window = g;
+vm.createContext(g); vm.runInContext(src, g);
+const KV = g.KV; let fail = 0;
+const ok = (c, m) => { console.log((c ? "  ok  " : "FAIL  ") + m); if (!c) fail++; };
+const mem = () => { const m = new Map(); return {getItem: k => m.has(k) ? m.get(k) : null, setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k), _m: m}; };
+ok(KV.ITER >= 600000, "iterații >= 600000 (" + KV.ITER + ")");
+const t0 = Date.now(); const e1 = await KV.encrypt("parola-lunga-123", "sk-test-ȘțÎ-cheie"); console.log("  (PBKDF2 " + (Date.now() - t0) + " ms)");
+const o1 = JSON.parse(e1); ok(o1.it >= 600000 && o1.kdf === "PBKDF2-SHA256", "plic cu kdf și it"); ok(!e1.includes("sk-test"), "textul clar nu apare în plic");
+ok(await KV.decrypt("parola-lunga-123", e1) === "sk-test-ȘțÎ-cheie", "decriptare corectă (unicode)");
+let bad = false; try { await KV.decrypt("alta-parola-xyz", e1); } catch { bad = true; } ok(bad, "parola greșită respinsă");
+const e2 = await KV.encrypt("parola-lunga-123", "sk-test-ȘțÎ-cheie"); const o2 = JSON.parse(e2);
+ok(o1.s !== o2.s && o1.iv !== o2.iv && o1.ct !== o2.ct, "sare/IV/ciphertext diferite la fiecare criptare"); ok(Buffer.from(o1.s, "base64").length === 16, "sare de 16 octeți");
+const tam = JSON.parse(e1); const ct = Buffer.from(tam.ct, "base64"); ct[0] ^= 1; tam.ct = ct.toString("base64"); bad = false; try { await KV.decrypt("parola-lunga-123", JSON.stringify(tam)); } catch { bad = true; } ok(bad, "alterarea ciphertextului detectată (GCM)");
+const low = JSON.parse(e1); low.it = 1000; bad = false; try { await KV.decrypt("parola-lunga-123", JSON.stringify(low)); } catch { bad = true; } ok(bad, "plic cu iterații < 600000 refuzat (anti-downgrade)");
+const st = mem(); const v = new KV.Vault("app.aik.vault", st);
+ok(!v.exists() && !v.unlocked(), "seif inexistent la început");
+await v.setup("parola-lunga-123", {openai: "sk-1", anthropic: "sk-ant-2"}); ok(v.exists() && v.unlocked(), "seif creat și deblocat");
+ok(!st._m.get("app.aik.vault").includes("sk-ant"), "stocarea nu conține chei în clar");
+v.data.google = "AIza-3"; await v.save(); const b2 = st._m.get("app.aik.vault"); v.lock(); ok(!v.unlocked() && v.data === null, "lock() șterge din memorie");
+bad = false; try { await v.unlock("gresita-gresita"); } catch { bad = true; } ok(bad && !v.unlocked(), "unlock cu parolă greșită eșuează");
+const d = await v.unlock("parola-lunga-123"); ok(d.openai === "sk-1" && d.anthropic === "sk-ant-2" && d.google === "AIza-3", "unlock cu parola corectă: toate cheile, inclusiv cea adăugată după");
+v.data.openai = ""; await v.save(); ok(st._m.get("app.aik.vault") !== b2, "salvare nouă = IV nou");
+const v2 = new KV.Vault("app.aik.vault", st); ok((await v2.unlock("parola-lunga-123")).openai === "", "a doua instanță citește starea salvată");
+v2.remove(); ok(!v2.exists() && !v2.unlocked(), "remove() șterge seiful");
+st.setItem("app.aik.vault", "nu-e-json"); bad = false; try { await new KV.Vault("app.aik.vault", st).unlock("x"); } catch { bad = true; } ok(bad, "format invalid respins");
+console.log(fail ? "EȘEC: " + fail : "TOATE OK"); process.exit(fail ? 1 : 0);

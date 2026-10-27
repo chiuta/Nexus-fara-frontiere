@@ -2,11 +2,15 @@
 
 **English** · [Română](README.ro.md) · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Version:** 2.0.0 · **Last updated:** 2026-10-26
+**Version:** 2.1.0 · **Last updated:** 2026-10-27
 
 Interface languages: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
-A personal AI chat hub in a single HTML file: you talk directly from the browser to Anthropic, OpenAI, Google or an OpenAI-compatible endpoint. **It is not an offline app** and your keys sit in the browser, unencrypted — read the section "Privacy and network".
+**Status:** stable (2.1.0). The optional password encryption of API keys is new and **has not been audited by a third party**.
+
+**Offline:** no. The interface loads offline after the first visit, but every message needs a network connection to the chosen provider (or a local endpoint such as Ollama).
+
+A personal AI chat hub in a single HTML file: you talk directly from the browser to Anthropic, OpenAI, Google or an OpenAI-compatible endpoint. **It is not an offline app** and your keys sit in the browser, unencrypted by default (optional password encryption since 2.1.0) — read the section "Privacy and network".
 
 **Live app:** https://chiuta.github.io/Nexus-fara-frontiere/
 
@@ -76,6 +80,19 @@ With the shipped CSP, a custom endpoint works only on `localhost`/`127.0.0.1`. F
 4. Open the file locally (or publish your own copy).
 
 For Ollama: start it with the `OLLAMA_ORIGINS` variable set to the page's origin (e.g. `https://chiuta.github.io`), otherwise the browser blocks the response (CORS). From the page published over HTTPS, `http://localhost` is allowed by browsers as an exception; a local network address `http://192.168.x.x` is not.
+
+## Password encryption for API keys (since 2.1.0, optional)
+
+In ⚙ Settings there is a "Password protection" card. **Off by default**: keys stay in `localStorage` in clear text, as described above.
+
+- When you turn it on, the keys currently entered are encrypted with **AES-256-GCM**, with a key derived from your password through **PBKDF2-SHA256, 600,000 iterations and a random 16-byte salt**, and stored as one envelope in `nexus:aik-vault`. The settings kept in `nexus:settings` then contain no keys. The clear-text copy is replaced only after the envelope has been read back and decrypted successfully (migration without loss). "Turn off protection" restores the keys to the normal settings after you confirm the password.
+- On opening, the app asks for the password (you can dismiss the dialog; the keys stay unavailable and can be unlocked from Settings). Unlocked keys live in memory only; "Lock now" drops them.
+- **Honest limits:** the component is small and **has not been audited by a third party**; the password cannot be recovered (if you forget it, enter the keys again); it does not protect against a malicious script or extension running in the page while the keys are unlocked; a short password can be guessed offline. The card's text exists in Romanian and English (other languages fall back to English).
+- "Delete all local data" also removes the vault. Tests: `node tests/keyvault-core.test.mjs` and `node tests/keyvault-ui.test.mjs`.
+
+## Nexus fără frontiere vs. AI Liber
+
+Both are single-file chat front-ends and they overlap in the "chat with your own API key" part; they are kept separate on purpose. **Nexus** is the working tool for people who already have keys: agents (personas), agent flows, Anthropic / OpenAI / Google / "Custom". **AI Liber** is the open door: free no-account models (Pollinations, DuckDuckGo, AI Horde), a guide to free AIs, quiz, prompt ideas, in-browser WebLLM, and more providers (Groq, Mistral, OpenRouter, Perplexity...), but no agents or flows. See also: https://chiuta.github.io/AI-Liber/
 
 ## Limits and warnings
 

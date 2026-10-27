@@ -2,11 +2,15 @@
 
 [English](README.md) · **Română** · [Français](README.fr.md) · [Italiano](README.it.md) · [Español](README.es.md) · [Português](README.pt.md) · [Deutsch](README.de.md) · [Magyar](README.hu.md)
 
-**Versiune:** 2.0.0 · **Ultima actualizare:** 2026-10-26
+**Versiune:** 2.1.0 · **Ultima actualizare:** 2026-10-27
 
 Limbile interfeței: **Română, English, Français, Italiano, Español, Português (PT), Deutsch, Magyar**
 
-Hub personal de chat AI într-un singur fișier HTML: vorbești direct din browser cu Anthropic, OpenAI, Google sau cu un endpoint compatibil OpenAI. **Nu este o aplicație offline** și cheile tale stau în browser, necriptate — citește secțiunea „Confidențialitate și rețea”.
+**Stare:** stabilă (2.1.0). Criptarea opțională cu parolă a cheilor API este nouă și **nu a fost auditată de un terț**.
+
+**Offline:** nu. Interfața se încarcă offline după prima vizită, dar orice mesaj cere conexiune la furnizorul ales (sau la un endpoint local, de ex. Ollama).
+
+Hub personal de chat AI într-un singur fișier HTML: vorbești direct din browser cu Anthropic, OpenAI, Google sau cu un endpoint compatibil OpenAI. **Nu este o aplicație offline** și cheile tale stau în browser, implicit necriptate (criptare opțională cu parolă din 2.1.0) — citește secțiunea „Confidențialitate și rețea”.
 
 **Live:** https://chiuta.github.io/Nexus-fara-frontiere/
 
@@ -76,6 +80,19 @@ Cu CSP-ul livrat, un endpoint personalizat funcționează doar pe `localhost`/`1
 4. Deschide fișierul local (sau publică-ți propria copie).
 
 Pentru Ollama: pornește-l cu variabila `OLLAMA_ORIGINS` setată la originea paginii (ex. `https://chiuta.github.io`), altfel browserul blochează răspunsul (CORS). Din pagina publicată prin HTTPS, `http://localhost` e permis de browsere ca excepție; o adresă de rețea locală `http://192.168.x.x` nu este.
+
+## Criptare cu parolă a cheilor API (din 2.1.0, opțională)
+
+În ⚙ Setări există un card „Protecție cu parolă”. **Implicit e oprită**: cheile rămân în `localStorage` în clar, ca mai sus.
+
+- Când o activezi, cheile introduse sunt criptate cu **AES-256-GCM**, cu o cheie derivată din parola ta prin **PBKDF2-SHA256, 600 000 de iterații și sare aleatoare de 16 octeți**, și păstrate într-un singur plic în `nexus:aik-vault`. Setările din `nexus:settings` nu mai conțin atunci nicio cheie. Copia în clar se înlocuiește abia după ce plicul a fost citit înapoi și decriptat cu succes (migrare fără pierdere). „Dezactivează protecția” readuce cheile în setările obișnuite, după confirmarea parolei.
+- La deschidere aplicația cere parola (poți închide dialogul; cheile rămân indisponibile și se pot debloca din Setări). Cheile deblocate stau doar în memorie; „Blochează acum” le scoate.
+- **Limite spuse deschis:** componenta e mică și **nu a fost auditată de un terț**; parola nu se poate recupera (dacă o uiți, reintroduci cheile); nu protejează împotriva unui script rău-intenționat sau a unei extensii care rulează în pagină cât timp cheile sunt deblocate; o parolă scurtă poate fi ghicită offline. Textele cardului există în română și engleză (celelalte limbi folosesc engleza).
+- „Șterge toate datele locale” șterge și seiful. Teste: `node tests/keyvault-core.test.mjs` și `node tests/keyvault-ui.test.mjs`.
+
+## Nexus fără frontiere față de AI Liber
+
+Ambele sunt interfețe de chat single-file și se suprapun la partea „chat cu propria cheie API”; sunt ținute separat intenționat. **Nexus** e unealta de lucru pentru cine are deja chei: agenți (persone), fluxuri de agenți, Anthropic / OpenAI / Google / „Custom”. **AI Liber** e poarta de intrare: modele gratuite fără cont (Pollinations, DuckDuckGo, AI Horde), ghid de AI-uri gratuite, quiz, idei de prompturi, WebLLM în browser și mai mulți furnizori (Groq, Mistral, OpenRouter, Perplexity...), dar fără agenți și fluxuri. Vezi și: https://chiuta.github.io/AI-Liber/
 
 ## Limite și avertismente
 
