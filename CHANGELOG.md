@@ -1,5 +1,9 @@
 # Jurnal de modificări
 
+## 2.2.5 — 2026-11-03
+
+Nucleu AI comun (FFF.ai): transportul către Anthropic, OpenAI-compatibil și Google trece prin același modul (cerere, SSE, anulare, erori), cu cheile din seiful aplicației; interfața, limbile și textele de eroare rămân ale aplicației.
+
 ## 2.2.4 — 2026-11-03
 
 Accesibilitate: meniul „Trimite către…” / „Primește…” stă într-un reper ARIA (regula axe «region»); secțiunea seifului folosește h2. Cod comun din hub.
