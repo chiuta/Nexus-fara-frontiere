@@ -1,5 +1,9 @@
 # Jurnal de modificări
 
+## 2.2.6 — 2026-11-03
+
+Etapa 9: versiunea API Anthropic (anthropic-version 2026-10-21, verificată în documentația oficială la 2026-11-03) și modelele vin dintr-un singur loc, nucleul AI comun (FFF.ai); temperature/top_p/top_k nu se mai trimit niciodată (eliminate în 2026-10-21); modele retrase înlocuite.
+
 ## 2.2.5 — 2026-11-03
 
 Nucleu AI comun (FFF.ai): transportul către Anthropic, OpenAI-compatibil și Google trece prin același modul (cerere, SSE, anulare, erori), cu cheile din seiful aplicației; interfața, limbile și textele de eroare rămân ale aplicației.
