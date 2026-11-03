@@ -1,5 +1,14 @@
 # Jurnal de modificări
 
+## 2.2.2 — 2026-11-03
+
+### Schimbat
+- **Migrare la `anthropic-version: 2026-10-21`** (era `2023-06-01`), pentru `POST /v1/messages` și `GET /v1/models`. Versiunea e acum o singură constantă (`ANTHROPIC_VERSION`).
+- Cererile către Anthropic nu mai trimit niciodată `temperature`/`top_p`/`top_k`: parametrii au fost eliminați în `2026-10-21` și cererile care îi includ primesc 400. (Aplicația nu expunea acești parametri în interfață.) Nu s-a schimbat nimic pentru OpenAI, Google sau endpoint-ul compatibil.
+
+### Adăugat
+- Test nou: `tests/anthropic-api.test.mjs` (antetul de versiune pe ambele rute, fără parametri de eșantionare, fără altă cerere externă).
+
 ## 2.2.0 — 2026-11-02 (reîmprospătare kit)
 
 - Nou (kit): **Sincronizare între dispozitive** (`FFF.sync`) — în dialogul «Transparență» (clic pe versiune → Copie de siguranță): conectezi două dispozitive direct (WebRTC, cod/QR, fără server și fără cont) și își schimbă datele aplicației; cea mai recentă valoare câștigă, secretele (chei API, parole) nu se trimit, ștergerile nu se propagă. Aplicarea trece prin importul kitului (confirmare, chei permise, rollback).
