@@ -1,5 +1,9 @@
 # Jurnal de modificări
 
+## 2.2.4 — 2026-11-03
+
+Accesibilitate: meniul „Trimite către…” / „Primește…” stă într-un reper ARIA (regula axe «region»); secțiunea seifului folosește h2. Cod comun din hub.
+
 ## 2.2.3 — 2026-11-03
 
 Seif comun de chei API (plic keys/vault): cheile se pot importa din VaultCrypt prin fișier, clipboard, cod QR sau altă filă (nu prin link); parola se cere la import, cheile nu se scriu în clar în localStorage. Cod comun din hub: tools/fff-envelope.js și tools/fff-seif.js (injectat).
