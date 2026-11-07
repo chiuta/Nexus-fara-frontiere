@@ -2,8 +2,8 @@
   "schema": 1,
   "slug": "nexus-fara-frontiere",
   "name": "Nexus fără frontiere — hub de agenți AI",
-  "version": "2.2.6",
-  "updated": "2026-11-03",
+  "version": "2.2.7",
+  "updated": "2026-11-07",
   "description": "Hub personal de chat AI într-un singur fișier HTML: te conectezi direct, din browser, la API-urile Anthropic, OpenAI, Google sau la un endpoint compatibil OpenAI. Fără server propriu, fără telemetrie; cheile rămân în browserul tău.",
   "egress": [
     {
@@ -47,8 +47,8 @@
     "BroadcastChannel"
   ],
   "storageKeys": [],
-  "sizeBytes": 648624,
-  "sha256": "ec5b90c6f73a8a1aec479ca4efed701bac68eb89aaf94e7ba0887a59e65f80dc",
+  "sizeBytes": 650230,
+  "sha256": "aa4f4bc180e88e09675ab9a8658a12f376efaede401609e50234f06f5143a247",
   "csp": {
     "present": true,
     "directives": {
@@ -97,7 +97,7 @@
     ]
   },
   "kit": {
-    "version": "1.2.0",
+    "version": "1.2.1",
     "modules": [
       "core",
       "store",
