@@ -1,5 +1,9 @@
 # Jurnal de modificări
 
+## 2.2.9 — 2026-11-08
+
+- Nou: contor «~N tokeni trimiși» per conversație (caractere/4, fără prețuri) și avertisment vizibil lângă câmpul cheii când cheile sunt în clar în localStorage (8 limbi).
+
 ## 2.2.6 — 2026-11-03
 
 Etapa 9: versiunea API Anthropic (anthropic-version 2026-10-21, verificată în documentația oficială la 2026-11-03) și modelele vin dintr-un singur loc, nucleul AI comun (FFF.ai); temperature/top_p/top_k nu se mai trimit niciodată (eliminate în 2026-10-21); modele retrase înlocuite.
