@@ -44,16 +44,17 @@
     "serviceWorker",
     "localStorage",
     "Web Crypto",
+    "WebGL",
     "BroadcastChannel"
   ],
   "storageKeys": [],
-  "sizeBytes": 706167,
-  "sha256": "cdab4956a2aeeca6f5808f950ce59c160d7b3eb0c4467b398974abb9008636b1",
+  "sizeBytes": 757806,
+  "sha256": "a2fcf24fa0ea1d56c72cd05ce4727c0504191daa394e8d20b6431d0b93733db9",
   "csp": {
     "present": true,
     "directives": {
       "default-src": "'none'",
-      "script-src": "sha256×7",
+      "script-src": "sha256×8",
       "style-src": "'unsafe-inline'",
       "img-src": "'self' data:",
       "connect-src": "https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*",
