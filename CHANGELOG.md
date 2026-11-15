@@ -1,5 +1,9 @@
 # Jurnal de modificări
 
+## 2.2.14 — 2026-11-15
+
+- Nou: texturi fractale hiper-detaliate (fff-texturi 1.1.2) — fundalul și suprafețele mari (carduri, panouri, antete, butoane; filele și dialogurile ascunse la încărcare, când se deschid) primesc un material generat local (WebGL2, fără rețea și fără imagini), care se repetă fără cusătură; culorile aplicației rămân ale ei. Se oprește din dialogul „Transparență” sau cu `?notex=1`.
+
 ## 2.2.9 — 2026-11-08
 
 - Nou: contor «~N tokeni trimiși» per conversație (caractere/4, fără prețuri) și avertisment vizibil lângă câmpul cheii când cheile sunt în clar în localStorage (8 limbi).
