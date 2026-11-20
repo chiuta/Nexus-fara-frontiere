@@ -1,5 +1,9 @@
 # Jurnal de modificări
 
+## 2.3.3 — 2026-11-19
+
+- Stocare locală blocată („blochează toate cookie-urile și datele site-urilor”, WebView fără DOM storage, iframe sandbox): aplicația se oprea cu eroarea SecurityError la pornire. Kit fff 1.8.1 trece automat pe o stocare temporară în memorie și aplicația pornește normal (constatat de bateria adversarială din 19 noiembrie 2026)
+
 ## 2.3.2 — 2026-11-17
 
 - Compatibilitate cu browsere mai vechi (Chrome/Edge 55+, Firefox 52+, Safari 10.1+/iOS 10.3+): kitul 1.8.0 aduce stratul de compatibilitate (rezerve pentru API-urile care lipsesc în motoarele vechi), iar sintaxa JavaScript mai nouă decât ES2017 a fost înlocuită cu forme echivalente acolo unde exista; expresiile regulate noi și `import()` trec prin rezerve. Fără modificări de funcționalitate intenționate. Verificat cu parser ES2017 și într-un motor vechi simulat, nu pe dispozitive reale.
