@@ -3,7 +3,7 @@
   "slug": "nexus-fara-frontiere",
   "name": "Nexus fără frontiere — hub de agenți AI",
   "version": "2.3.3",
-  "updated": "2026-11-19",
+  "updated": "2026-11-22",
   "description": "Hub personal de chat AI într-un singur fișier HTML: te conectezi direct, din browser, la API-urile Anthropic, OpenAI, Google sau la un endpoint compatibil OpenAI. Fără server propriu, fără telemetrie; cheile rămân în browserul tău.",
   "egress": [
     {
@@ -48,8 +48,8 @@
     "BroadcastChannel"
   ],
   "storageKeys": [],
-  "sizeBytes": 892399,
-  "sha256": "0ae5ef55f4be86c463eedd597d9cb760bd33531bbe8f0195e0d5cc131b1a704b",
+  "sizeBytes": 892459,
+  "sha256": "7c215a79465f76b19cc63d07d9a946bf5a487a853980f79bb4e094b70cba3f32",
   "csp": {
     "present": true,
     "directives": {
@@ -63,7 +63,8 @@
       "frame-src": "'none'",
       "object-src": "'none'",
       "worker-src": "'self'",
-      "manifest-src": "'self'"
+      "manifest-src": "'self'",
+      "upgrade-insecure-requests": "''"
     },
     "scriptInline": "hash",
     "connect": "https://api.anthropic.com https://api.openai.com https://generativelanguage.googleapis.com http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:*"
